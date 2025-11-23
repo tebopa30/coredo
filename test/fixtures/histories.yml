@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  session: one
+  dish: one
+  decided_at: 2025-11-22 10:16:29
+
+two:
+  session: two
+  dish: two
+  decided_at: 2025-11-22 10:16:29
