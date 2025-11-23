@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 const baseUrl = 'https://<YOUR_DOMAIN_OR_IP>/api';
 
-class Api {
+class ApiService {
   static Future<Map<String, dynamic>> start() async {
     final r = await http.get(Uri.parse('$baseUrl/questions/start'));
     return jsonDecode(r.body);
