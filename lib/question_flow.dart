@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'services/api_service.dart';
 import 'package:coredo_app/services/api_service.dart';
 
 class QuestionFlow extends StatefulWidget {
@@ -9,17 +8,34 @@ class QuestionFlow extends StatefulWidget {
 }
 
 class _QuestionFlowState extends State<QuestionFlow> {
-  String prompt = 'あっさり？こってり？';
-  List<String> options = ['あっさり', 'こってり'];
+  String sessionId = '';
+  String prompt = '';
+  List<Map<String, dynamic>> options = [];
 
-  Future<void> nextQuestion(String answer) async {
-    final data = await ApiService.nextQuestion(answer);
+  @override
+  void initState() {
+    super.initState();
+    _loadFirstQuestion();
+  }
+
+  Future<void> _loadFirstQuestion() async {
+    final data = await ApiService.start();
+    setState(() {
+      sessionId = data['session_id'];
+      prompt = data['prompt'];
+      options = List<Map<String, dynamic>>.from(data['options']);
+    });
+  }
+
+  Future<void> nextQuestion(int optionId) async {
+    final data = await ApiService.answer(sessionId, optionId);
+    if (!mounted) return;
     if (data['dish'] != null) {
       Navigator.pushNamed(context, '/result', arguments: data['dish']);
     } else {
       setState(() {
         prompt = data['prompt'];
-        options = List<String>.from(data['options']);
+        options = List<Map<String, dynamic>>.from(data['options']);
       });
     }
   }
@@ -34,8 +50,8 @@ class _QuestionFlowState extends State<QuestionFlow> {
           Text(prompt, style: const TextStyle(fontSize: 20)),
           const SizedBox(height: 20),
           ...options.map((opt) => ElevatedButton(
-                onPressed: () => nextQuestion(opt),
-                child: Text(opt),
+                onPressed: () => nextQuestion(opt['id']),
+                child: Text(opt['text']),
               )),
         ],
       ),
