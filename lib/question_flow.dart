@@ -27,7 +27,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
         options = List<Map<String, dynamic>>.from(data['options'] ?? []);
       });
     } catch (e) {
-      print('API error: $e');
+      debugPrint('API error: $e');
     }
   }
 
