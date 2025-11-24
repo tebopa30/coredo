@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const baseUrl = 'https://<YOUR_DOMAIN_OR_IP>/api';
+const baseUrl = 'http://192.168.1.5:3000/api';
 
 class ApiService {
   static Future<Map<String, dynamic>> start() async {
