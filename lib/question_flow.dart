@@ -19,23 +19,29 @@ class _QuestionFlowState extends State<QuestionFlow> {
   }
 
   Future<void> _loadFirstQuestion() async {
-    final data = await ApiService.start();
-    setState(() {
-      sessionId = data['session_id'];
-      prompt = data['prompt'];
-      options = List<Map<String, dynamic>>.from(data['options']);
-    });
+    try {
+      final data = await ApiService.start();
+        setState(() {
+        sessionId = data['session_id'] ?? '';
+        prompt = data['prompt'] ?? '';
+        options = List<Map<String, dynamic>>.from(data['options'] ?? []);
+      });
+    } catch (e) {
+      print('API error: $e');
+    }
   }
+
 
   Future<void> nextQuestion(int optionId) async {
     final data = await ApiService.answer(sessionId, optionId);
     if (!mounted) return;
-    if (data['dish'] != null) {
-      Navigator.pushNamed(context, '/result', arguments: data['dish']);
+
+    if (data['result'] != null) {
+      Navigator.pushNamed(context, '/result', arguments: data['result']);
     } else {
       setState(() {
-        prompt = data['prompt'];
-        options = List<Map<String, dynamic>>.from(data['options']);
+        prompt = data['text'];
+        options = List<Map<String, dynamic>>.from(data['options'] ?? []);
       });
     }
   }
