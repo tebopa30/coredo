@@ -36,12 +36,22 @@ class _QuestionFlowState extends State<QuestionFlow> {
     final data = await ApiService.answer(sessionId, optionId);
     if (!mounted) return;
 
-    if (data['result'] != null) {
+    if (data['next_questions'] != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NextQuestionPage(
+            nextQuestions: List<String>.from(data['next_questions']),
+            sessionId: sessionId,
+          ),
+        ),
+      );
+    } else if (data['result'] != null) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ResultScreen(result: data['result']),
-          )
+        ),
       );
     } else {
       setState(() {
@@ -68,4 +78,59 @@ class _QuestionFlowState extends State<QuestionFlow> {
       ),
     );
   }
+}
+
+class NextQuestionPage extends StatelessWidget {
+  final List<String> nextQuestions;
+  final String sessionId;
+
+  const NextQuestionPage({
+    super.key,
+    required this.nextQuestions,
+    required this.sessionId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("次の質問を選んでください")),
+      body: ListView.builder(
+        itemCount: nextQuestions.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(nextQuestions[index]),
+            onTap: () {
+              // ユーザーが選んだ質問を送信
+              sendAnswer(context, nextQuestions[index]);
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  void sendAnswer(BuildContext context, String question) async {
+  final data = await ApiService.sendAiAnswer(sessionId, question);
+
+  if (data.containsKey('result')) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultScreen(result: data['result']),
+      ),
+    );
+  } else if (data.containsKey('next_questions')) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NextQuestionPage(
+          nextQuestions: List<String>.from(data['next_questions']),
+          sessionId: sessionId,
+        ),
+      ),
+    );
+  } else {
+    debugPrint("Unexpected API response: $data");
+  }
+}
 }

@@ -15,7 +15,8 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dishName = result['name']; // ← コンストラクタから受け取った result を使う
+    final dishName = result['name'];
+    final imageUrl = result['image_url']; // ← Railsから返す画像URLを受け取る
     saveHistory(dishName);
 
     return Scaffold(
@@ -27,6 +28,9 @@ class ResultScreen extends StatelessWidget {
             Text('おすすめ料理: $dishName', style: const TextStyle(fontSize: 24)),
             const SizedBox(height: 20),
             Text('レシピ: ${result['recipe'] ?? "レシピ情報なし"}'),
+            const SizedBox(height: 20),
+            if (imageUrl != null) // ← ここで画像を表示
+              Image.network(imageUrl),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {

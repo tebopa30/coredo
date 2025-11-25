@@ -15,7 +15,8 @@ Future<void> main() async {
   });
   _logger.info('アプリ起動しました');
   await dotenv.load(fileName: ".env");
-  print('dotenv loaded: ${dotenv.isInitialized}');
+  _logger.info('dotenv loaded: ${dotenv.isInitialized}');
+  _logger.info('APIキー: ${dotenv.env['MAPS_API_KEY']}');
   runApp(const MyApp());
 }
 
@@ -48,7 +49,7 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              child: const Text('質問スタート'),
+              child: const Text('食事を探す'),
               onPressed: () {
                 Navigator.pushNamed(context, '/question');
               },
@@ -57,12 +58,6 @@ class HomeScreen extends StatelessWidget {
               child: const Text('履歴を見る'),
               onPressed: () {
                 Navigator.pushNamed(context, '/history');
-              },
-            ),
-            ElevatedButton(
-              child: const Text('地図を見る'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/map');
               },
             ),
           ],

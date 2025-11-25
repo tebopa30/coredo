@@ -22,4 +22,14 @@ class ApiService {
     final r = await http.get(Uri.parse('$baseUrl/results/$sessionId'));
     return jsonDecode(r.body);
   }
+
+  static Future<Map<String, dynamic>> sendAiAnswer(String sessionId, String question) async {
+    final res = await http.post(
+      Uri.parse('$baseUrl/questions/ai_answer'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'session_id': sessionId, 'question': question}),
+    );
+    return jsonDecode(res.body);
+  }
+
 }

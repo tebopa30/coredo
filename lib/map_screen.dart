@@ -48,7 +48,7 @@ class _MapScreenState extends State<MapScreen> {
       mapController.animateCamera(CameraUpdate.newLatLng(current));
 
       // 🔍 dishName に応じて検索 (REST API直叩き)
-      final markers = await searchPlaces(widget.dishName, current);
+      final markers = await searchPlaces(context,widget.dishName, current);
 
       setState(() {
         _markers.addAll(markers);

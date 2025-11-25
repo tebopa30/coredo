@@ -16,8 +16,8 @@ val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
 android {
     namespace = "com.example.coredo_app"
-    compileSdk = 34   // ← flutter.compileSdkVersion の代わりに直接指定
-    ndkVersion = "25.1.8937393" // 必要なら指定
+    compileSdk = 36   // ← flutter.compileSdkVersion の代わりに直接指定
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -32,8 +32,8 @@ android {
 
     defaultConfig {
         applicationId = "com.coredo_app"
-        minSdk = flutter.minSdkVersion        // ← flutter.minSdkVersion の代わりに直接指定
-        targetSdk = 34     // ← flutter.targetSdkVersion の代わりに直接指定
+        minSdk = flutter.minSdkVersion       // ← flutter.minSdkVersion の代わりに直接指定
+        targetSdk = 36     // ← flutter.targetSdkVersion の代わりに直接指定
         versionCode = 1    // ← flutter.versionCode の代わりに直接指定
         versionName = "1.0"// ← flutter.versionName の代わりに直接指定
 
