@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:coredo_app/places_service.dart'; // ← REST API直叩きの関数をimport
 
 final Logger _logger = Logger('MyApp');
 
 class MapScreen extends StatefulWidget {
-  final String dishName;
+  final String dishName; // ← 「ラーメン」「カレー」など
   const MapScreen({super.key, required this.dishName});
 
   @override
@@ -16,19 +17,17 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   final LatLng _center = const LatLng(35.6895, 139.6917); // 新宿仮置き
+  final Set<Marker> _markers = {};
 
-  /// 現在地を取得する関数
   Future<LatLng> _getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // ユーザーが拒否した場合 → fallback 座標を返す
         return _center;
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      // 永久拒否 → 設定画面に誘導するか fallback
       return _center;
     }
 
@@ -41,14 +40,21 @@ class _MapScreenState extends State<MapScreen> {
     return LatLng(position.latitude, position.longitude);
   }
 
-  /// Map生成時に呼ばれる関数
   void _onMapCreated(GoogleMapController controller) async {
+    debugPrint('Map created');
     mapController = controller;
     try {
       LatLng current = await _getCurrentLocation();
       mapController.animateCamera(CameraUpdate.newLatLng(current));
+
+      // 🔍 dishName に応じて検索 (REST API直叩き)
+      final markers = await searchPlaces(widget.dishName, current);
+
+      setState(() {
+        _markers.addAll(markers);
+      });
     } catch (e) {
-      _logger.warning('現在地取得失敗: $e');
+      _logger.warning('検索失敗: $e');
       mapController.animateCamera(CameraUpdate.newLatLng(_center));
     }
   }
@@ -60,17 +66,11 @@ class _MapScreenState extends State<MapScreen> {
       body: GoogleMap(
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(
-          target: _center, // 仮置き位置
+          target: _center,
           zoom: 14.0,
         ),
         myLocationEnabled: true,
-        markers: {
-          Marker(
-            markerId: const MarkerId('shop1'),
-            position: _center,
-            infoWindow: InfoWindow(title: '${widget.dishName}のお店'),
-          ),
-        },
+        markers: _markers,
       ),
     );
   }

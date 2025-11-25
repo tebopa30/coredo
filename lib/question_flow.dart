@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coredo_app/services/api_service.dart';
+import 'package:coredo_app/result_screen.dart';
 
 class QuestionFlow extends StatefulWidget {
   const QuestionFlow({super.key});
@@ -31,13 +32,17 @@ class _QuestionFlowState extends State<QuestionFlow> {
     }
   }
 
-
   Future<void> nextQuestion(int optionId) async {
     final data = await ApiService.answer(sessionId, optionId);
     if (!mounted) return;
 
     if (data['result'] != null) {
-      Navigator.pushNamed(context, '/result', arguments: data['result']);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultScreen(result: data['result']),
+          )
+      );
     } else {
       setState(() {
         prompt = data['text'];

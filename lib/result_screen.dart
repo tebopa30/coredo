@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:coredo_app/map_screen.dart';
 
 class ResultScreen extends StatelessWidget {
-  const ResultScreen({super.key});
+  final Map<String, dynamic> result;
+  const ResultScreen({super.key, required this.result});
 
   Future<void> saveHistory(String dishName) async {
     final prefs = await SharedPreferences.getInstance();
@@ -13,9 +15,8 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dish = ModalRoute.of(context)!.settings.arguments as Map;
-
-    saveHistory(dish['name']); // 履歴保存
+    final dishName = result['name']; // ← コンストラクタから受け取った result を使う
+    saveHistory(dishName);
 
     return Scaffold(
       appBar: AppBar(title: const Text('結果')),
@@ -23,15 +24,20 @@ class ResultScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text('おすすめ料理: ${dish['name']}', style: const TextStyle(fontSize: 24)),
+            Text('おすすめ料理: $dishName', style: const TextStyle(fontSize: 24)),
             const SizedBox(height: 20),
-            Text('レシピ: ${dish['recipe']}'),
+            Text('レシピ: ${result['recipe'] ?? "レシピ情報なし"}'),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/map', arguments: dish['name']);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MapScreen(dishName: dishName),
+                  ),
+                );
               },
-              child: const Text('近くのお店を見る'),
+              child: const Text('近くのお店を探す'),
             ),
           ],
         ),

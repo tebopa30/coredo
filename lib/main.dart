@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'question_flow.dart';
-import 'result_screen.dart';
-import 'map_screen.dart';
 import 'history_screen.dart';
 
 final Logger _logger = Logger('MyApp');
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   // ログの出力方法を設定
   Logger.root.level = Level.ALL; // すべてのログを出す
   Logger.root.onRecord.listen((record) {
     debugPrint('${record.level.name}: ${record.time}: ${record.message}');
   });
   _logger.info('アプリ起動しました');
-
+  await dotenv.load(fileName: ".env");
+  print('dotenv loaded: ${dotenv.isInitialized}');
   runApp(const MyApp());
 }
 
@@ -29,8 +30,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomeScreen(),
         '/question': (context) => const QuestionFlow(),
-        '/result': (context) => const ResultScreen(),
-        '/map': (context) => const MapScreen(dishName: 'ラーメン'),
         '/history': (context) => const HistoryScreen(),
       },
     );
