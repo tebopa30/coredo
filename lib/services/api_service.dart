@@ -5,11 +5,13 @@ const baseUrl = 'http://10.0.2.2:3000/api';
 
 class ApiService {
   static Future<Map<String, dynamic>> start() async {
-    final r = await http.get(Uri.parse('$baseUrl/questions/start'));
+    final r = await http.get(Uri.parse('$baseUrl/questions/start'),
+    headers: {'Accept': 'application/json'}
+    );
     return jsonDecode(r.body);
   }
 
-  static Future<Map<String, dynamic>> answer(String sessionId, int optionId) async {
+  static Future<Map<String, dynamic>> answer(String sessionId, String optionId) async {
     final r = await http.post(
       Uri.parse('$baseUrl/answers'),
       headers: {'Content-Type': 'application/json'},
@@ -23,6 +25,18 @@ class ApiService {
     return jsonDecode(r.body);
   }
 
+  static Future<Map<String, dynamic>> finish(String sessionId, String question) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/answers/finish'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'session_id': sessionId,
+        'question': question,
+      }),
+    );
+    return jsonDecode(response.body);
+  }
+
   static Future<Map<String, dynamic>> sendAiAnswer(String sessionId, String question) async {
     final res = await http.post(
       Uri.parse('$baseUrl/questions/ai_answer'),
@@ -31,5 +45,4 @@ class ApiService {
     );
     return jsonDecode(res.body);
   }
-
 }

@@ -32,11 +32,11 @@ class _QuestionFlowState extends State<QuestionFlow> {
     }
   }
 
-  Future<void> nextQuestion(int optionId) async {
+  Future<void> nextQuestion(String optionId) async {
     final data = await ApiService.answer(sessionId, optionId);
     if (!mounted) return;
 
-    if (data['next_questions'] != null) {
+    if (data.containsKey('next_questions')) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -46,19 +46,28 @@ class _QuestionFlowState extends State<QuestionFlow> {
           ),
         ),
       );
-    } else if (data['result'] != null) {
+    } else if (data.containsKey('result')) {
+  if (data['result'] is String) {
+    // ai_answer が String を返した場合 → finish API を呼ぶ
+    final finishData = await ApiService.finish(sessionId, data['result'] as String);
+    final resultMap = finishData['result'] as Map<String, dynamic>;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultScreen(result: resultMap),
+      ),
+    );
+  } else if (data['result'] is Map<String, dynamic>) {
+    // すでに Map が返ってきている場合 → そのまま ResultScreen に渡す
+      final resultMap = data['result'] as Map<String, dynamic>;
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ResultScreen(result: data['result']),
+          builder: (context) => ResultScreen(result: resultMap),
         ),
       );
-    } else {
-      setState(() {
-        prompt = data['text'];
-        options = List<Map<String, dynamic>>.from(data['options'] ?? []);
-      });
     }
+   }
   }
 
   @override
@@ -71,7 +80,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
           Text(prompt, style: const TextStyle(fontSize: 20)),
           const SizedBox(height: 20),
           ...options.map((opt) => ElevatedButton(
-                onPressed: () => nextQuestion(opt['id']),
+                onPressed: () => nextQuestion(opt['id'] as String),
                 child: Text(opt['text']),
               )),
         ],
@@ -109,17 +118,10 @@ class NextQuestionPage extends StatelessWidget {
     );
   }
 
-  void sendAnswer(BuildContext context, String question) async {
+void sendAnswer(BuildContext context, String question) async {
   final data = await ApiService.sendAiAnswer(sessionId, question);
 
-  if (data.containsKey('result')) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ResultScreen(result: data['result']),
-      ),
-    );
-  } else if (data.containsKey('next_questions')) {
+  if (data.containsKey('next_questions')) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -129,6 +131,27 @@ class NextQuestionPage extends StatelessWidget {
         ),
       ),
     );
+  } else if (data.containsKey('result')) {
+    if (data['result'] is String) {
+      // ai_answer が String を返した場合 → finish API を呼ぶ
+      final finishData = await ApiService.finish(sessionId, data['result'] as String);
+      final resultMap = finishData['result'] as Map<String, dynamic>;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultScreen(result: resultMap),
+        ),
+      );
+    } else if (data['result'] is Map<String, dynamic>) {
+      // すでに Map が返ってきている場合 → そのまま ResultScreen に渡す
+      final resultMap = data['result'] as Map<String, dynamic>;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultScreen(result: resultMap),
+        ),
+      );
+    }
   } else {
     debugPrint("Unexpected API response: $data");
   }
