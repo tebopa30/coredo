@@ -13,42 +13,43 @@ class ResultScreen extends StatelessWidget {
     await prefs.setStringList('history', history);
   }
 
-@override
-Widget build(BuildContext context) {
-  final dishName = result['name'] ?? "不明な料理";
-  final imageUrl = result['image_url'];
+  @override
+  Widget build(BuildContext context) {
+    final dishName = result['dish'] ?? "不明な料理";
+    final description = result['description'] ?? "説明なし";
+    final imageUrl = result['image_url'];
 
-  if (dishName.isNotEmpty) {
-    saveHistory(dishName);
-  }
+    if (dishName.isNotEmpty) {
+      saveHistory(dishName);
+    }
 
-  return Scaffold(
-    appBar: AppBar(title: const Text('結果')),
-    body: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Text('おすすめ料理: $dishName', style: const TextStyle(fontSize: 24)),
-          const SizedBox(height: 20),
-          Text('レシピ: ${result['recipe'] ?? "レシピ情報なし"}'),
-          const SizedBox(height: 20),
-          if (imageUrl != null && imageUrl.isNotEmpty)
-            Image.network(imageUrl),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MapScreen(dishName: dishName),
-                ),
-              );
-            },
-            child: const Text('近くのお店を探す'),
-          ),
-        ],
+    return Scaffold(
+      appBar: AppBar(title: const Text('結果')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text('おすすめ料理: $dishName', style: const TextStyle(fontSize: 24)),
+            const SizedBox(height: 20),
+            Text(description, style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 20),
+            if (imageUrl != null && imageUrl.isNotEmpty)
+              Image.network(imageUrl),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MapScreen(dishName: dishName),
+                  ),
+                );
+              },
+              child: const Text('近くのお店を探す'),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
