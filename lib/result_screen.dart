@@ -47,6 +47,14 @@ class ResultScreen extends StatelessWidget {
               },
               child: const Text('近くのお店を探す'),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Navigator の最初の画面まで戻る
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
+              child: const Text('メインに戻る'),
+            ),
           ],
         ),
       ),

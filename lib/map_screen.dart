@@ -3,6 +3,66 @@ import 'package:logging/logging.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:coredo_app/places_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+/// 店舗詳細ダイアログ
+void showPlaceDetailsDialog(BuildContext context, Map<String, dynamic> details) {
+  final name = details['name'] ?? '名前不明';
+  final address = details['address'] ?? '住所不明';
+  final rating = details['rating']?.toString() ?? '評価なし';
+  final phone = details['phone'] ?? '電話番号なし';
+
+  // 営業時間（配列で返ることが多い）
+  List<String> openingHours = [];
+  if (details['opening_hours'] != null &&
+      details['opening_hours']['weekday_text'] != null) {
+    openingHours = List<String>.from(details['opening_hours']['weekday_text']);
+  }
+
+  // photo_reference がある場合は URL を組み立てる
+  String? photoUrl;
+  if (details['photos'] != null && details['photos'].isNotEmpty) {
+    final photoRef = details['photos'][0]['photo_reference'];
+    photoUrl =
+        'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=$photoRef&key=${dotenv.env['MAPS_API_KEY']}';
+  }
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(name),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (photoUrl != null)
+                Image.network(photoUrl, fit: BoxFit.cover),
+              const SizedBox(height: 10),
+              Text(address),
+              const SizedBox(height: 5),
+              Text('評価: $rating'),
+              const SizedBox(height: 5),
+              Text('電話: $phone'),
+              const SizedBox(height: 10),
+              if (openingHours.isNotEmpty) ...[
+                const Text('営業時間:'),
+                for (var line in openingHours) Text(line),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('閉じる'),
+          ),
+        ],
+      );
+    },
+  );
+}
 
 final Logger _logger = Logger('MyApp');
 
@@ -48,10 +108,19 @@ class _MapScreenState extends State<MapScreen> {
       LatLng current = await _getCurrentLocation();
       mapController?.animateCamera(CameraUpdate.newLatLng(current));
 
+      // searchPlaces が Marker のリストを返す想定
       final markers = await searchPlaces(context, widget.dishName, current);
 
       setState(() {
-        _markers.addAll(markers);
+        _markers.addAll(markers.map((m) {
+          // Marker に onTap を追加してダイアログ表示
+          return m.copyWith(
+            onTapParam: () async {
+              final details = await fetchPlaceDetails(m.markerId.value);
+              showPlaceDetailsDialog(context, details);
+            },
+          );
+        }));
         _noResults = markers.isEmpty;
       });
     } catch (e) {
