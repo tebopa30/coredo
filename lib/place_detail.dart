@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:coredo_app/places_service.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class PlaceDetailPage extends StatefulWidget {
   final String placeId;
@@ -40,16 +39,16 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
       );
     }
 
-    final List<dynamic> rawReviews = (details?['reviews'] as List<dynamic>?) ?? const [];
+    final List<dynamic> rawReviews =
+        (details?['reviews'] as List<dynamic>?) ?? const [];
     final List<Map<String, dynamic>> reviews = rawReviews
         .where((r) => r is Map)
         .map((r) => Map<String, dynamic>.from(r as Map))
         .toList();
 
-    debugPrint("reviews length: ${reviews.length}");
-    if (reviews.isNotEmpty) {
-      debugPrint("first review text: ${reviews.first['text']}");
-    }
+    // Rails 側が返す photos はすでに完全な URL
+    final List<String> photos =
+        (details?['photos'] as List<dynamic>?)?.cast<String>() ?? const [];
 
     return Scaffold(
       appBar: AppBar(title: Text(details?['name'] ?? '不明')),
@@ -64,7 +63,24 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
             Text("評価: ${details?['rating']} / 5"),
           const SizedBox(height: 16),
 
-          // レビュー部分（高さ固定なし）
+          // 写真表示（photo_reference を使わず、Rails 側の完全 URL をそのまま利用）
+          if (photos.isNotEmpty)
+            SizedBox(
+              height: 200,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: photos
+                    .map((url) => Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Image.network(url, fit: BoxFit.cover),
+                        ))
+                    .toList(),
+              ),
+            ),
+
+          const SizedBox(height: 16),
+
+          // レビュー部分
           if (reviews.isNotEmpty)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +88,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                 const Text("レビュー:", style: TextStyle(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 ...reviews.map((review) {
-                  debugPrint("rendering review: ${review['author_name']} / ${review['text']}");
                   final author = review['author_name'] ?? '匿名';
                   final rating = review['rating']?.toString() ?? '-';
                   final when = review['relative_time_description'] ?? '';

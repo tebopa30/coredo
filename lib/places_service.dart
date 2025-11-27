@@ -4,23 +4,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:coredo_app/place_detail.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final logger = Logger();
 
-/// Google Places Details API を叩いて店舗詳細を取得
+/// Rails API を叩いて店舗詳細を取得
 Future<Map<String, dynamic>> fetchPlaceDetails(String placeId) async {
-  final apiKey = dotenv.env['MAPS_API_KEY'];
-  if (apiKey == null || apiKey.isEmpty) {
-    throw Exception("APIキーが読み込めていません。dotenv.load() が main.dart にあるか確認してください");
-  }
-
-  final url =
-      'https://maps.googleapis.com/maps/api/place/details/json'
-      '?place_id=$placeId'
-      '&fields=name,rating,formatted_phone_number,formatted_address,opening_hours,photos,reviews'
-      '&language=ja'
-      '&key=$apiKey';
+  final url = "http://10.0.2.2:3000/api/places/details?place_id=$placeId";
 
   final resp = await http.get(Uri.parse(url));
   if (resp.statusCode != 200) {
@@ -28,26 +17,100 @@ Future<Map<String, dynamic>> fetchPlaceDetails(String placeId) async {
   }
 
   final data = json.decode(resp.body) as Map<String, dynamic>;
-  final status = data['status'] as String?;
-  final err = data['error_message'];
 
-  if (status != 'OK') {
-    throw Exception('Details status=$status, error=$err, placeId=$placeId');
+  if (data.containsKey('error')) {
+    throw Exception(
+        'Details status=${data['status']}, error=${data['error']}, placeId=$placeId');
   }
 
-  final result = (data['result'] as Map<String, dynamic>?) ?? {};
-  logger.i("opening_hours: ${result['opening_hours']}");
-logger.i("reviews: ${result['reviews']}");
+  logger.i("opening_hours: ${data['opening_hours']}");
+  logger.i("reviews: ${data['reviews']}");
 
   return {
-    'name': result['name'],
-    'address': result['formatted_address'],
-    'phone': result['formatted_phone_number'],
-    'rating': result['rating'],
-    'opening_hours': result['opening_hours'],
-    'photos': result['photos'],
-    'reviews': result['reviews'],
+    'name': data['name'],
+    'address': data['address'],
+    'phone': data['phone'],
+    'rating': data['rating'],
+    'opening_hours': data['opening_hours'],
+    // photos は Rails 側が返す完全 URL の配列をそのまま受け取る
+    'photos': (data['photos'] as List<dynamic>?)?.cast<String>() ?? [],
+    'reviews': data['reviews'] ?? [],
   };
+}
+
+/// 店舗詳細ダイアログを表示
+void showPlaceDetailsDialog(
+    BuildContext context, Map<String, dynamic> details, String placeId) {
+  final List<String> photos =
+      (details['photos'] as List<dynamic>?)?.cast<String>() ?? [];
+
+  final List<Map<String, dynamic>> reviews =
+      (details['reviews'] as List<dynamic>?)
+          ?.map((r) => Map<String, dynamic>.from(r as Map))
+          .toList() ??
+      [];
+
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: Text(details['name'] ?? '不明'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("住所: ${details['address'] ?? '不明'}"),
+            Text("評価: ${details['rating']?.toString() ?? '評価なし'}"),
+            if ((details['phone'] as String?)?.isNotEmpty == true)
+              Text("電話: ${details['phone']}"),
+            const SizedBox(height: 8),
+            if (photos.isNotEmpty)
+              SizedBox(
+                height: 200,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: photos
+                      .map((url) => Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Image.network(url, fit: BoxFit.cover),
+                          ))
+                      .toList(),
+                ),
+              ),
+            const SizedBox(height: 8),
+            if (reviews.isNotEmpty) ...[
+              const Text("レビュー:", style: TextStyle(fontWeight: FontWeight.bold)),
+              ...reviews.map((review) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text(
+                    "${review['author_name']}: ${review['text'] ?? ''}",
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                );
+              }).toList(),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("閉じる")),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => PlaceDetailPage(placeId: placeId)),
+            );
+          },
+          child: const Text("詳細を見る"),
+        ),
+      ],
+    ),
+  );
 }
 
 /// Rails API を叩いて検索結果をマーカーに変換
@@ -94,39 +157,7 @@ Future<Set<Marker>> searchPlaces(
               final details = await fetchPlaceDetails(placeId);
               Navigator.pop(context); // ローディング閉じる
 
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: Text(details['name'] ?? '不明'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("住所: ${details['address'] ?? '不明'}"),
-                      Text("評価: ${details['rating']?.toString() ?? '評価なし'}"),
-                      if ((details['phone'] as String?)?.isNotEmpty == true)
-                        Text("電話: ${details['phone']}"),
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("閉じる")),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) =>
-                                  PlaceDetailPage(placeId: placeId)),
-                        );
-                      },
-                      child: const Text("詳細を見る"),
-                    ),
-                  ],
-                ),
-              );
+              showPlaceDetailsDialog(context, details, placeId);
             } catch (e) {
               Navigator.pop(context); // ローディング閉じる
               logger.e("詳細取得失敗: $e");
