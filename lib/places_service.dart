@@ -20,7 +20,8 @@ Future<Map<String, dynamic>> fetchPlaceDetails(String placeId) async {
 
   if (data.containsKey('error')) {
     throw Exception(
-        'Details status=${data['status']}, error=${data['error']}, placeId=$placeId');
+      'Details status=${data['status']}, error=${data['error']}, placeId=$placeId',
+    );
   }
 
   logger.i("opening_hours: ${data['opening_hours']}");
@@ -40,7 +41,10 @@ Future<Map<String, dynamic>> fetchPlaceDetails(String placeId) async {
 
 /// 店舗詳細ダイアログを表示
 void showPlaceDetailsDialog(
-    BuildContext context, Map<String, dynamic> details, String placeId) {
+  BuildContext context,
+  Map<String, dynamic> details,
+  String placeId,
+) {
   final List<String> photos =
       (details['photos'] as List<dynamic>?)?.cast<String>() ?? [];
 
@@ -70,16 +74,21 @@ void showPlaceDetailsDialog(
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: photos
-                      .map((url) => Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Image.network(url, fit: BoxFit.cover),
-                          ))
+                      .map(
+                        (url) => Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Image.network(url, fit: BoxFit.cover),
+                        ),
+                      )
                       .toList(),
                 ),
               ),
             const SizedBox(height: 8),
             if (reviews.isNotEmpty) ...[
-              const Text("レビュー:", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "レビュー:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               ...reviews.map((review) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -95,15 +104,17 @@ void showPlaceDetailsDialog(
       ),
       actions: [
         TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("閉じる")),
+          onPressed: () => Navigator.pop(context),
+          child: const Text("閉じる"),
+        ),
         TextButton(
           onPressed: () {
             Navigator.pop(context);
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (_) => PlaceDetailPage(placeId: placeId)),
+                builder: (_) => PlaceDetailPage(placeId: placeId),
+              ),
             );
           },
           child: const Text("詳細を見る"),
@@ -115,7 +126,10 @@ void showPlaceDetailsDialog(
 
 /// Rails API を叩いて検索結果をマーカーに変換
 Future<Set<Marker>> searchPlaces(
-    BuildContext context, String dishName, LatLng current) async {
+  BuildContext context,
+  String dishName,
+  LatLng current,
+) async {
   try {
     final query = Uri.encodeComponent(dishName);
     final response = await http.get(
@@ -161,9 +175,9 @@ Future<Set<Marker>> searchPlaces(
             } catch (e) {
               Navigator.pop(context); // ローディング閉じる
               logger.e("詳細取得失敗: $e");
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('店舗情報の取得に失敗しました。$e')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('店舗情報の取得に失敗しました。$e')));
             }
           },
         );

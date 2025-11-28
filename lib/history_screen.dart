@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:coredo_app/result_screen.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
+
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
@@ -23,15 +25,58 @@ class _HistoryScreenState extends State<HistoryScreen> {
     });
   }
 
+  Future<void> deleteHistoryItemByValue(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      history.removeWhere((item) => item == value); // 値ベースですべて削除
+    });
+    await prefs.setStringList('history', history);
+  }
+
   @override
   Widget build(BuildContext context) {
+    // 重複を除去して表示用のリストを作成
+    final uniqueHistory = history.toSet().toList();
+
     return Scaffold(
       appBar: AppBar(title: const Text('料理履歴')),
       body: ListView.builder(
-        itemCount: history.length,
+        itemCount: uniqueHistory.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(history[index]),
+          final item = uniqueHistory[index];
+          return Dismissible(
+            key: Key(item), // 値をキーにする（一意なのでOK）
+            background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 20.0),
+              child: const Icon(Icons.delete, color: Colors.white),
+            ),
+            direction: DismissDirection.endToStart,
+            onDismissed: (direction) async {
+              await deleteHistoryItemByValue(item); // 値ベースで削除
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('$item を削除しました')));
+            },
+            child: ListTile(
+              title: Text(item),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ResultScreen(
+                      result: {
+                        'dish': item,
+                        'description': '履歴からの参照',
+                        'image_url': '',
+                        'fromHistory': true, // 履歴からの遷移フラグ
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
           );
         },
       ),

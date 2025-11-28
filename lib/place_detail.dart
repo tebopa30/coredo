@@ -34,9 +34,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
   @override
   Widget build(BuildContext context) {
     if (details == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final List<dynamic> rawReviews =
@@ -59,8 +57,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
           const SizedBox(height: 8),
           Text("電話番号: ${details?['phone'] ?? '不明'}"),
           const SizedBox(height: 8),
-          if (details?['rating'] != null)
-            Text("評価: ${details?['rating']} / 5"),
+          if (details?['rating'] != null) Text("評価: ${details?['rating']} / 5"),
           const SizedBox(height: 16),
 
           // 写真表示（photo_reference を使わず、Rails 側の完全 URL をそのまま利用）
@@ -70,10 +67,12 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: photos
-                    .map((url) => Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Image.network(url, fit: BoxFit.cover),
-                        ))
+                    .map(
+                      (url) => Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Image.network(url, fit: BoxFit.cover),
+                      ),
+                    )
                     .toList(),
               ),
             ),
@@ -85,7 +84,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("レビュー:", style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  "レビュー:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
                 ...reviews.map((review) {
                   final author = review['author_name'] ?? '匿名';
@@ -98,8 +100,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("⭐ $rating - $author（$when）",
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                          "⭐ $rating - $author（$when）",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         const SizedBox(height: 6),
                         Text(text),
                         const Divider(height: 20),

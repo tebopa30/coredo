@@ -19,7 +19,8 @@ class ResultScreen extends StatelessWidget {
     final description = result['description'] ?? "説明なし";
     final imageUrl = result['image_url'];
 
-    if (dishName.isNotEmpty) {
+    // 履歴からの遷移でなければ保存
+    if (dishName.isNotEmpty && result['fromHistory'] != true) {
       saveHistory(dishName);
     }
 
@@ -36,24 +37,31 @@ class ResultScreen extends StatelessWidget {
             if (imageUrl != null && imageUrl.isNotEmpty)
               Image.network(imageUrl),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MapScreen(dishName: dishName),
+            IntrinsicWidth(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MapScreen(dishName: dishName),
+                        ),
+                      );
+                    },
+                    child: const Text('近くのお店を探す'),
                   ),
-                );
-              },
-              child: const Text('近くのお店を探す'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navigator の最初の画面まで戻る
-                Navigator.popUntil(context, (route) => route.isFirst);
-              },
-              child: const Text('メインに戻る'),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Navigator の最初の画面まで戻る
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                    },
+                    child: const Text('メインに戻る'),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
