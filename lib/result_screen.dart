@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:coredo_app/map_screen.dart';
+import 'components/background_scaffold.dart';
 
 class ResultScreen extends StatelessWidget {
   final Map<String, dynamic> result;
@@ -24,7 +25,7 @@ class ResultScreen extends StatelessWidget {
       saveHistory(dishName);
     }
 
-    return Scaffold(
+    return BackgroundScaffold(
       appBar: AppBar(title: const Text('結果')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

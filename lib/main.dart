@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'question_flow.dart';
 import 'history_screen.dart';
+import 'components/background_scaffold.dart';
 
 final Logger _logger = Logger('MyApp');
 
@@ -42,26 +43,55 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Coredo')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              child: const Text('食事を探す'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/question');
-              },
+    return BackgroundScaffold(
+      overlayImage: 'assets/1.png',
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              const Spacer(flex: 2),
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: IntrinsicWidth(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                          child: const Text('食事を探す'),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/question');
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          child: const Text('履歴を見る'),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/history');
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Text(
+                'Coredo',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Colors.white.withOpacity(0.5),
+                ),
+              ),
             ),
-            ElevatedButton(
-              child: const Text('履歴を見る'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/history');
-              },
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

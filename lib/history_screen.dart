@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:coredo_app/result_screen.dart';
+import 'components/background_scaffold.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -38,7 +39,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     // 重複を除去して表示用のリストを作成
     final uniqueHistory = history.toSet().toList();
 
-    return Scaffold(
+    return BackgroundScaffold(
       appBar: AppBar(title: const Text('料理履歴')),
       body: ListView.builder(
         itemCount: uniqueHistory.length,
