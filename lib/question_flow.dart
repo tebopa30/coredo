@@ -18,10 +18,12 @@ class _QuestionFlowState extends State<QuestionFlow> {
 
   final List<String> _overlayImages = [
     'assets/2.png',
+    'assets/3.png',
     'assets/4.png',
     'assets/5.png',
     'assets/6.png',
     'assets/7.png',
+    'assets/8.png',
   ];
 
   @override
@@ -153,9 +155,13 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
 
   final List<String> _overlayImages = [
     'assets/2.png',
+    'assets/3.png',
     'assets/4.png',
+    'assets/5.png',
+    'assets/6.png',
     'assets/7.png',
     'assets/8.png',
+    'assets/9.png',
   ];
 
   @override

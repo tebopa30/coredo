@@ -36,11 +36,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 重複を除去して表示用のリストを作成
-    final uniqueHistory = history.toSet().toList();
+    // 重複を除去して表示用のリストを作成し、最新20件のみ取得
+    final uniqueHistory = history.toSet().toList().reversed.take(20).toList();
 
     return BackgroundScaffold(
-      appBar: AppBar(title: const Text('料理履歴')),
+      appBar: AppBar(
+        title: const Text('料理履歴'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+      ),
       body: ListView.builder(
         itemCount: uniqueHistory.length,
         itemBuilder: (context, index) {
@@ -61,7 +66,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ).showSnackBar(SnackBar(content: Text('$item を削除しました')));
             },
             child: ListTile(
-              title: Text(item),
+              title: Text(item, textAlign: TextAlign.center),
               onTap: () {
                 Navigator.push(
                   context,
