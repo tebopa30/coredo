@@ -91,7 +91,16 @@ class ResultScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Text('おすすめ料理: $dishName', style: const TextStyle(fontSize: 24)),
+              Text.rich(
+                TextSpan(
+                  style: const TextStyle(fontSize: 24),
+                  children: [
+                    const TextSpan(text: 'これなんかどう？\n'),
+                    TextSpan(text: dishName),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20),
               Text(description, style: const TextStyle(fontSize: 16)),
               const SizedBox(height: 20),

@@ -24,6 +24,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
     'assets/6.png',
     'assets/7.png',
     'assets/8.png',
+    'assets/9.png',
   ];
 
   @override
@@ -68,27 +69,15 @@ class _QuestionFlowState extends State<QuestionFlow> {
         ),
       );
     } else if (data.containsKey('result')) {
-      if (data['result'] is String) {
-        final finishData = await ApiService.finish(
-          sessionId,
-          data['result'] as String,
-        );
-        final resultMap = finishData['result'] as Map<String, dynamic>;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultScreen(result: resultMap),
-          ),
-        );
-      } else if (data['result'] is Map<String, dynamic>) {
-        final resultMap = data['result'] as Map<String, dynamic>;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultScreen(result: resultMap),
-          ),
-        );
-      }
+      // どちらの場合も finish を呼んで最終結果を取得する
+      final finishData = await ApiService.finish(sessionId, answer);
+      final resultMap = finishData['result'] as Map<String, dynamic>;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultScreen(result: resultMap),
+        ),
+      );
     }
   }
 
@@ -211,7 +200,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
   }
 
   void sendAnswer(BuildContext context, String answer) async {
-    final data = await ApiService.sendAiAnswer(widget.sessionId, answer);
+    final data = await ApiService.answer(widget.sessionId, answer);
 
     if (data.containsKey('next_questions')) {
       final next = data['next_questions'];
@@ -255,27 +244,15 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
     }
 
     if (data.containsKey('result')) {
-      if (data['result'] is String) {
-        final finishData = await ApiService.finish(
-          widget.sessionId,
-          data['result'] as String,
-        );
-        final resultMap = finishData['result'] as Map<String, dynamic>;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultScreen(result: resultMap),
-          ),
-        );
-      } else if (data['result'] is Map<String, dynamic>) {
-        final resultMap = data['result'] as Map<String, dynamic>;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultScreen(result: resultMap),
-          ),
-        );
-      }
+      // どちらの場合も finish を呼んで最終結果を取得する
+      final finishData = await ApiService.finish(widget.sessionId, answer);
+      final resultMap = finishData['result'] as Map<String, dynamic>;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultScreen(result: resultMap),
+        ),
+      );
     } else {
       debugPrint("Unexpected API response: $data");
     }

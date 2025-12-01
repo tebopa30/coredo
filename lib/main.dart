@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         ElevatedButton(
-                          child: const Text('食事を探す'),
+                          child: const Text('ごはんにする'),
                           onPressed: () {
                             Navigator.pushNamed(context, '/question');
                           },
