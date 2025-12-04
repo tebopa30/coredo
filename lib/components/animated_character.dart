@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 class AnimatedCharacter extends StatefulWidget {
   final String imagePath;
@@ -13,10 +14,17 @@ class _AnimatedCharacterState extends State<AnimatedCharacter>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _bounce;
+  bool _isVideo = false;
 
   @override
   void initState() {
     super.initState();
+
+    // Check if the file is a video
+    _isVideo =
+        widget.imagePath.toLowerCase().endsWith('.mp4') ||
+        widget.imagePath.toLowerCase().endsWith('.mov') ||
+        widget.imagePath.toLowerCase().endsWith('.avi');
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
@@ -37,15 +45,73 @@ class _AnimatedCharacterState extends State<AnimatedCharacter>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(0, _bounce.value),
-          child: child,
-        );
-      },
-      child: Image.asset(widget.imagePath, fit: BoxFit.contain),
+    if (_isVideo) {
+      // For videos, don't apply bouncing animation
+      return VideoPlayerWidget(videoPath: widget.imagePath);
+    } else {
+      // For images, apply bouncing animation
+      return AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Transform.translate(
+            offset: Offset(0, _bounce.value),
+            child: child,
+          );
+        },
+        child: Image.asset(widget.imagePath, fit: BoxFit.contain),
+      );
+    }
+  }
+}
+
+class VideoPlayerWidget extends StatefulWidget {
+  final String videoPath;
+
+  const VideoPlayerWidget({super.key, required this.videoPath});
+
+  @override
+  State<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
+}
+
+class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+  late VideoPlayerController _videoController;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo();
+  }
+
+  Future<void> _initializeVideo() async {
+    _videoController = VideoPlayerController.asset(widget.videoPath);
+    await _videoController.initialize();
+    _videoController.setLooping(true);
+    _videoController.play();
+    setState(() {
+      _isInitialized = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    _videoController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return FittedBox(
+      fit: BoxFit.contain,
+      child: SizedBox(
+        width: _videoController.value.size.width,
+        height: _videoController.value.size.height,
+        child: VideoPlayer(_videoController),
+      ),
     );
   }
 }

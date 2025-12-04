@@ -41,11 +41,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     return BackgroundScaffold(
       appBar: AppBar(
-        title: const Text('料理履歴'),
+        title: const Text('履歴'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
       ),
+      extendBodyBehindAppBar: true,
       body: ListView.builder(
         itemCount: uniqueHistory.length,
         itemBuilder: (context, index) {
@@ -66,7 +67,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ).showSnackBar(SnackBar(content: Text('$item を削除しました')));
             },
             child: ListTile(
-              title: Text(item, textAlign: TextAlign.center),
+              title: Text('\n$item', textAlign: TextAlign.center),
               onTap: () {
                 Navigator.push(
                   context,
@@ -74,7 +75,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     builder: (context) => ResultScreen(
                       result: {
                         'dish': item,
-                        'description': '履歴からの参照',
+                        'description': '',
                         'image_url': '',
                         'fromHistory': true, // 履歴からの遷移フラグ
                       },

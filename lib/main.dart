@@ -17,7 +17,6 @@ Future<void> main() async {
   _logger.info('アプリ起動しました');
   await dotenv.load(fileName: ".env");
   _logger.info('dotenv loaded: ${dotenv.isInitialized}');
-  _logger.info('APIキー: ${dotenv.env['MAPS_API_KEY']}');
   runApp(const MyApp());
 }
 
@@ -28,6 +27,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Coredo',
+      theme: ThemeData(
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.lightBlue,
+            side: const BorderSide(color: Colors.lightBlue, width: 2),
+            elevation: 0,
+          ),
+        ),
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),
@@ -44,12 +53,12 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
-      overlayImage: 'assets/1.png',
+      overlayVideos: ['assets/1.MP4'], // ← 画像でも動画でもOK
       body: Stack(
         children: [
           Column(
             children: [
-              const Spacer(flex: 2),
+              const Spacer(flex: 4),
               Expanded(
                 flex: 1,
                 child: Center(

@@ -14,17 +14,14 @@ class _QuestionFlowState extends State<QuestionFlow> {
   String sessionId = '';
   String prompt = '';
   List<String> options = [];
-  String? overlayImage;
+  String? overlayPath;
 
-  final List<String> _overlayImages = [
-    'assets/2.png',
-    'assets/3.png',
-    'assets/4.png',
-    'assets/5.png',
-    'assets/6.png',
-    'assets/7.png',
-    'assets/8.png',
-    'assets/9.png',
+  final List<String> _overlayPaths = [
+    'assets/3.MP4',
+    'assets/4.MP4',
+    'assets/5.MP4',
+    'assets/6.MP4',
+    'assets/7.MP4',
   ];
 
   @override
@@ -69,9 +66,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
         ),
       );
     } else if (data.containsKey('result')) {
-      // どちらの場合も finish を呼んで最終結果を取得する
-      final finishData = await ApiService.finish(sessionId, answer);
-      final resultMap = finishData['result'] as Map<String, dynamic>;
+      final resultMap = data['result'] as Map<String, dynamic>;
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -83,9 +78,9 @@ class _QuestionFlowState extends State<QuestionFlow> {
 
   @override
   Widget build(BuildContext context) {
-    overlayImage ??= _overlayImages[Random().nextInt(_overlayImages.length)];
+    overlayPath ??= _overlayPaths[Random().nextInt(_overlayPaths.length)];
     return BackgroundScaffold(
-      overlayImage: overlayImage,
+      overlayVideos: [overlayPath!],
       body: Column(
         children: [
           const Spacer(flex: 2),
@@ -140,27 +135,24 @@ class NextQuestionPage extends StatefulWidget {
 }
 
 class _NextQuestionPageState extends State<NextQuestionPage> {
-  String? overlayImage;
+  String? overlayPath;
 
-  final List<String> _overlayImages = [
-    'assets/2.png',
-    'assets/3.png',
-    'assets/4.png',
-    'assets/5.png',
-    'assets/6.png',
-    'assets/7.png',
-    'assets/8.png',
-    'assets/9.png',
+  final List<String> _overlayPaths = [
+    'assets/3.MP4',
+    'assets/4.MP4',
+    'assets/5.MP4',
+    'assets/6.MP4',
+    'assets/7.MP4',
   ];
 
   @override
   Widget build(BuildContext context) {
-    overlayImage ??= _overlayImages[Random().nextInt(_overlayImages.length)];
+    overlayPath ??= _overlayPaths[Random().nextInt(_overlayPaths.length)];
     final question = widget.nextQuestions.first['question'] as String;
     final options = List<String>.from(widget.nextQuestions.first['options']);
 
     return BackgroundScaffold(
-      overlayImage: overlayImage,
+      overlayVideos: _overlayPaths,
       body: Column(
         children: [
           const Spacer(flex: 2),
@@ -244,9 +236,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
     }
 
     if (data.containsKey('result')) {
-      // どちらの場合も finish を呼んで最終結果を取得する
-      final finishData = await ApiService.finish(widget.sessionId, answer);
-      final resultMap = finishData['result'] as Map<String, dynamic>;
+      final resultMap = data['result'] as Map<String, dynamic>;
       Navigator.push(
         context,
         MaterialPageRoute(

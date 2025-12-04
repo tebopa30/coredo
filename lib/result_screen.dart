@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'dart:convert';
-
 import 'components/background_scaffold.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -34,7 +32,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   void dispose() {
-    channel.sink.close(); // 🔽 接続終了を明示
+    channel.sink.close(); // 接続終了を明示
     super.dispose();
   }
 
@@ -49,19 +47,24 @@ class _ResultScreenState extends State<ResultScreen> {
     String url;
     switch (appName) {
       case 'googleMaps':
-        url = 'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(dishName)}';
+        url =
+            'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(dishName)}';
         break;
       case 'yahooMaps':
-        url = 'https://map.yahoo.co.jp/search?p=${Uri.encodeComponent(dishName)}';
+        url =
+            'https://map.yahoo.co.jp/search?p=${Uri.encodeComponent(dishName)}';
         break;
       case 'hotpepper':
-        url = 'https://www.hotpepper.jp/s/Y112/?sw=${Uri.encodeComponent(dishName)}';
+        url =
+            'https://www.hotpepper.jp/s/Y112/?sw=${Uri.encodeComponent(dishName)}';
         break;
       case 'tabelog':
-        url = 'https://tabelog.com/rstLst/?sw=${Uri.encodeComponent(dishName)}';
+        url =
+            'https://tabelog.com/rstLst/?sw=${Uri.encodeComponent(dishName)}';
         break;
       case 'ubereats':
-        url = 'https://www.ubereats.com/search?q=${Uri.encodeComponent(dishName)}';
+        url =
+            'https://www.ubereats.com/search?q=${Uri.encodeComponent(dishName)}';
         break;
       default:
         return;
@@ -77,7 +80,9 @@ class _ResultScreenState extends State<ResultScreen> {
     return InkWell(
       onTap: () => _launchExternalApp(appName, dishName),
       child: Container(
-        padding: const EdgeInsets.all(8),
+        width: 50,
+        height: 50,
+        padding: const EdgeInsets.all(1),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -89,7 +94,14 @@ class _ResultScreenState extends State<ResultScreen> {
             ),
           ],
         ),
-        child: Image.asset(logoPath, fit: BoxFit.contain),
+        child: Center(
+        child: Image.asset(
+          logoPath, 
+          width: 80,
+          height: 80,
+          fit: BoxFit.contain,
+         ),
+        ),
       ),
     );
   }
@@ -100,23 +112,34 @@ class _ResultScreenState extends State<ResultScreen> {
     final description = widget.result['description'] ?? "説明なし";
 
     return BackgroundScaffold(
+      overlayVideos: ['assets/8.MP4'], // ← 固定の背景動画を設定
       appBar: AppBar(
         title: const Text('結果'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      extendBodyBehindAppBar: true,
+      body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text.rich(
                 TextSpan(
                   style: const TextStyle(fontSize: 24),
                   children: [
-                    const TextSpan(text: 'これなんかどう？\n'),
-                    TextSpan(text: dishName),
+                    const TextSpan(text: 'これはどうかな？\n\n'),
+                    TextSpan(
+                      text: dishName,
+                      style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                      color: Colors.pink,
+                    ),
+                   ),
                   ],
                 ),
                 textAlign: TextAlign.center,
@@ -124,43 +147,32 @@ class _ResultScreenState extends State<ResultScreen> {
               const SizedBox(height: 20),
               Text(description, style: const TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-
-              // 🔽 WebSocketからのpushを受け取る
-              StreamBuilder(
-                stream: channel.stream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final data = jsonDecode(snapshot.data);
-                    final imageUrl = data['image_url'];
-                    if (imageUrl != null && imageUrl.isNotEmpty) {
-                      return SizedBox(width: 200, child: Image.network(imageUrl));
-                    }
-                  }
-                  return const CircularProgressIndicator();
-                },
-              ),
-
-              const SizedBox(height: 30),
               const Text(
-                'お店を探す',
+                '',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 50),
               GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: 3,
+                childAspectRatio: 1.4,
                 mainAxisSpacing: 12,
                 crossAxisSpacing: 12,
                 children: [
-                  _buildAppButton('googleMaps', 'assets/google_maps_logo.png', dishName),
-                  _buildAppButton('yahooMaps', 'assets/yahoo_maps_logo.png', dishName),
-                  _buildAppButton('hotpepper', 'assets/hotpepper_logo.png', dishName),
-                  _buildAppButton('tabelog', 'assets/tabelog_logo.png', dishName),
-                  _buildAppButton('ubereats', 'assets/ubereats_logo.png', dishName),
+                  _buildAppButton(
+                      'googleMaps', 'assets/google_maps_logo.png', dishName),
+                  _buildAppButton(
+                      'yahooMaps', 'assets/yahoo_maps_logo.png', dishName),
+                  _buildAppButton(
+                      'hotpepper', 'assets/hotpepper_logo.png', dishName),
+                  _buildAppButton(
+                      'tabelog', 'assets/tabelog_logo.png', dishName),
+                  _buildAppButton(
+                      'ubereats', 'assets/ubereats_logo.png', dishName),
                 ],
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 0),
               IntrinsicWidth(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
