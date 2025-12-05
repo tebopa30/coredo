@@ -47,45 +47,56 @@ class _HistoryScreenState extends State<HistoryScreen> {
         centerTitle: true,
       ),
       extendBodyBehindAppBar: true,
-      body: ListView.builder(
-        itemCount: uniqueHistory.length,
-        itemBuilder: (context, index) {
-          final item = uniqueHistory[index];
-          return Dismissible(
-            key: Key(item), // 値をキーにする（一意なのでOK）
-            background: Container(
-              color: Colors.red,
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only(right: 20.0),
-              child: const Icon(Icons.delete, color: Colors.white),
-            ),
-            direction: DismissDirection.endToStart,
-            onDismissed: (direction) async {
-              await deleteHistoryItemByValue(item); // 値ベースで削除
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('$item を削除しました')));
+      body: Stack(
+        children: [
+          // 🖼 共通背景画像
+          Image.asset(
+            'assets/bg1.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          ListView.builder(
+            itemCount: uniqueHistory.length,
+            itemBuilder: (context, index) {
+              final item = uniqueHistory[index];
+              return Dismissible(
+                key: Key(item), // 値をキーにする（一意なのでOK）
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                direction: DismissDirection.endToStart,
+                onDismissed: (direction) async {
+                  await deleteHistoryItemByValue(item); // 値ベースで削除
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('$item を削除しました')));
+                },
+                child: ListTile(
+                  title: Text('\n$item', textAlign: TextAlign.center),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ResultScreen(
+                          result: {
+                            'dish': item,
+                            'description': '',
+                            'image_url': '',
+                            'fromHistory': true, // 履歴からの遷移フラグ
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
             },
-            child: ListTile(
-              title: Text('\n$item', textAlign: TextAlign.center),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ResultScreen(
-                      result: {
-                        'dish': item,
-                        'description': '',
-                        'image_url': '',
-                        'fromHistory': true, // 履歴からの遷移フラグ
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

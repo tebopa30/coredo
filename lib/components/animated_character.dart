@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:coredo_app/sound_manager.dart';
 
 class AnimatedCharacter extends StatefulWidget {
   final String imagePath;
@@ -81,11 +82,13 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void initState() {
     super.initState();
     _initializeVideo();
+    SoundManager().isSoundOn.addListener(_updateVolume);
   }
 
   Future<void> _initializeVideo() async {
     _videoController = VideoPlayerController.asset(widget.videoPath);
     await _videoController.initialize();
+    _updateVolume();
     _videoController.setLooping(true);
     _videoController.play();
     setState(() {
@@ -93,8 +96,15 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     });
   }
 
+  void _updateVolume() {
+    if (_isInitialized) {
+      _videoController.setVolume(SoundManager().isSoundOn.value ? 1.0 : 0.0);
+    }
+  }
+
   @override
   void dispose() {
+    SoundManager().isSoundOn.removeListener(_updateVolume);
     _videoController.dispose();
     super.dispose();
   }

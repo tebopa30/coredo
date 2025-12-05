@@ -4,6 +4,8 @@ import 'package:logging/logging.dart';
 import 'question_flow.dart';
 import 'history_screen.dart';
 import 'components/background_scaffold.dart';
+import 'sound_manager.dart';
+import 'settings_screen.dart';
 
 final Logger _logger = Logger('MyApp');
 
@@ -17,6 +19,7 @@ Future<void> main() async {
   _logger.info('アプリ起動しました');
   await dotenv.load(fileName: ".env");
   _logger.info('dotenv loaded: ${dotenv.isInitialized}');
+  await SoundManager().init();
   runApp(const MyApp());
 }
 
@@ -42,6 +45,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/question': (context) => const QuestionFlow(),
         '/history': (context) => const HistoryScreen(),
+        '/settings': (context) => const SettingsScreen(),
       },
     );
   }
@@ -53,7 +57,20 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
-      overlayVideos: ['assets/1.MP4'], // ← 画像でも動画でもOK
+      overlayVideos: ['assets/21.mp4'], // ← 画像でも動画でもOK
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, color: Color.fromARGB(255, 75, 75, 75)),
+            onPressed: () {
+              Navigator.pushNamed(context, '/settings');
+            },
+          ),
+        ],
+      ),
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           Column(

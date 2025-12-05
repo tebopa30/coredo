@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:math';
+import 'package:coredo_app/sound_manager.dart';
 
 class BackgroundScaffold extends StatefulWidget {
   final List<String>? overlayVideos; // 複数候補の動画パス
   final Widget body;
   final PreferredSizeWidget? appBar;
-  final bool extendBodyBehindAppBar; 
+  final bool extendBodyBehindAppBar;
 
   const BackgroundScaffold({
     Key? key,
@@ -37,15 +38,24 @@ class _BackgroundScaffoldState extends State<BackgroundScaffold> {
         _videoController = VideoPlayerController.asset(selectedPath)
           ..setLooping(false)
           ..initialize().then((_) {
+            _updateVolume();
             _videoController!.play();
             setState(() {});
           });
       }
     }
+    SoundManager().isSoundOn.addListener(_updateVolume);
+  }
+
+  void _updateVolume() {
+    if (_videoController != null && _videoController!.value.isInitialized) {
+      _videoController!.setVolume(SoundManager().isSoundOn.value ? 1.0 : 0.0);
+    }
   }
 
   @override
   void dispose() {
+    SoundManager().isSoundOn.removeListener(_updateVolume);
     _videoController?.dispose();
     super.dispose();
   }
@@ -57,30 +67,22 @@ class _BackgroundScaffoldState extends State<BackgroundScaffold> {
       extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
       body: Stack(
         children: [
-          // 🖼 共通背景画像
-          Image.asset(
-            'assets/bg1.png',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-
           // 🎬 選ばれた動画を重ねる
           if (_videoController != null && _videoController!.value.isInitialized)
             Transform.translate(
-              offset: const Offset(0, 200),
+              offset: const Offset(0, 180),
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: Transform.scale(
-                 scale: 1.1,
-                 child: SizedBox(
-                  width: _videoController!.value.size.width,
-                  height: _videoController!.value.size.height,
-                  child: VideoPlayer(_videoController!),
+                  scale: 1.7,
+                  child: SizedBox(
+                    width: _videoController!.value.size.width,
+                    height: _videoController!.value.size.height,
+                    child: VideoPlayer(_videoController!),
+                  ),
                 ),
               ),
             ),
-           ),
           // 上に重ねる UI
           widget.body,
         ],

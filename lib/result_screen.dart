@@ -112,15 +112,15 @@ class _ResultScreenState extends State<ResultScreen> {
     final description = widget.result['description'] ?? "説明なし";
 
     return BackgroundScaffold(
-      overlayVideos: ['assets/8.MP4'], // ← 固定の背景動画を設定
+      overlayVideos: ['assets/20.mp4'], // ← 固定の背景動画を設定
       appBar: AppBar(
-        title: const Text('結果'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
       ),
       extendBodyBehindAppBar: true,
-      body: Center(
+      body: Align(
+        alignment: Alignment.bottomCenter,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -128,16 +128,19 @@ class _ResultScreenState extends State<ResultScreen> {
             children: [
               Text.rich(
                 TextSpan(
-                  style: const TextStyle(fontSize: 24),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                   children: [
-                    const TextSpan(text: 'これはどうかな？\n\n'),
+                    const TextSpan(text: 'これはどうかな？'), 
                     TextSpan(
-                      text: dishName,
+                      text: '\n\n$dishName',
                       style: const TextStyle(
-                      fontSize: 24,
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                      color: Colors.pink,
+                      color: Colors.white,
                     ),
                    ),
                   ],
