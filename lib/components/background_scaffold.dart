@@ -70,11 +70,11 @@ class _BackgroundScaffoldState extends State<BackgroundScaffold> {
           // 🎬 選ばれた動画を重ねる
           if (_videoController != null && _videoController!.value.isInitialized)
             Transform.translate(
-              offset: const Offset(0, 180),
+              offset: const Offset(0, 240),
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: Transform.scale(
-                  scale: 1.7,
+                  scale: 1.6,
                   child: SizedBox(
                     width: _videoController!.value.size.width,
                     height: _videoController!.value.size.height,

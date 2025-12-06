@@ -6,6 +6,7 @@ import 'history_screen.dart';
 import 'components/background_scaffold.dart';
 import 'sound_manager.dart';
 import 'settings_screen.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 final Logger _logger = Logger('MyApp');
 
@@ -120,5 +121,26 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class SoundManager {
+  static final SoundManager _instance = SoundManager._internal();
+  factory SoundManager() => _instance;
+  SoundManager._internal();
+
+  final AudioPlayer _bgmPlayer = AudioPlayer();
+
+  Future<void> init() async {
+    await _bgmPlayer.setReleaseMode(ReleaseMode.loop); // ループ再生
+    await _bgmPlayer.play(AssetSource('audio/437_long_BPM120.mp3')); // assets/audio/bgm.mp3
+  }
+
+  Future<void> stopBgm() async {
+    await _bgmPlayer.stop();
+  }
+
+  Future<void> setVolume(double volume) async {
+    await _bgmPlayer.setVolume(volume);
   }
 }
