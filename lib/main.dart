@@ -7,6 +7,7 @@ import 'components/background_scaffold.dart';
 import 'sound_manager.dart';
 import 'settings_screen.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 final Logger _logger = Logger('MyApp');
 
@@ -21,6 +22,7 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   _logger.info('dotenv loaded: ${dotenv.isInitialized}');
   await SoundManager().init();
+  await MobileAds.instance.initialize();
   runApp(const MyApp());
 }
 
@@ -35,8 +37,8 @@ class MyApp extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
-            foregroundColor: Colors.lightBlue,
-            side: const BorderSide(color: Colors.lightBlue, width: 2),
+            foregroundColor: Colors.orange,
+            side: const BorderSide(color: Colors.orange, width: 2),
             elevation: 0,
           ),
         ),
@@ -120,7 +122,51 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: BannerAdWidget(),
     );
+  }
+}
+class BannerAdWidget extends StatefulWidget {
+  @override
+  _BannerAdWidgetState createState() => _BannerAdWidgetState();
+}
+
+class _BannerAdWidgetState extends State<BannerAdWidget> {
+  late BannerAd _bannerAd;
+  bool _isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _bannerAd = BannerAd(
+      adUnitId: 'ca-app-pub-3940256099942544/6300978111', // バナー広告ユニットID
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) => setState(() => _isLoaded = true),
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    )..load();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _isLoaded
+        ? Container(
+            alignment: Alignment.center,
+            child: AdWidget(ad: _bannerAd),
+            width: _bannerAd.size.width.toDouble(),
+            height: _bannerAd.size.height.toDouble(),
+          )
+        : SizedBox.shrink();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd.dispose();
+    super.dispose();
   }
 }
 
@@ -144,3 +190,4 @@ class SoundManager {
     await _bgmPlayer.setVolume(volume);
   }
 }
+

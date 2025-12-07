@@ -8,7 +8,7 @@ plugins {
 val mapsApiKey: String = System.getenv("GOOGLE_API_KEY") ?: ""
 
 android {
-    namespace = "com.example.coredo_app"
+    namespace = "com.coredo_app"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 

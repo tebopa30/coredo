@@ -8,6 +8,7 @@ class BackgroundScaffold extends StatefulWidget {
   final Widget body;
   final PreferredSizeWidget? appBar;
   final bool extendBodyBehindAppBar;
+  final Widget? bottomNavigationBar; 
 
   const BackgroundScaffold({
     Key? key,
@@ -15,6 +16,7 @@ class BackgroundScaffold extends StatefulWidget {
     required this.body,
     this.appBar,
     this.extendBodyBehindAppBar = false,
+    this.bottomNavigationBar,
   }) : super(key: key);
 
   @override
@@ -70,7 +72,7 @@ class _BackgroundScaffoldState extends State<BackgroundScaffold> {
           // 🎬 選ばれた動画を重ねる
           if (_videoController != null && _videoController!.value.isInitialized)
             Transform.translate(
-              offset: const Offset(0, 240),
+              offset: const Offset(0, 200),
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: Transform.scale(

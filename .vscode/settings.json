@@ -1,4 +1,5 @@
 {
   "files.defaultLanguage": "",
-  "editor.language.colorizedBracketPairs": []
+  "editor.language.colorizedBracketPairs": [],
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
