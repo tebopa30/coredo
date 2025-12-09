@@ -1,100 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:coredo_app/places_service.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:geolocator/geolocator.dart';
+// import 'package:coredo_app/places_service.dart';
 
+/*
 /// 店舗詳細ダイアログ
 void showPlaceDetailsDialog(BuildContext context, Map<String, dynamic> details) {
-  final name = details['name'] ?? '名前不明';
-  final address = details['address'] ?? '住所不明';
-  final rating = details['rating']?.toString() ?? '評価なし';
-  final phone = details['phone'] ?? '電話番号なし';
-
-  // 営業時間
-  List<String> openingHours = [];
-  if (details['opening_hours'] != null &&
-      details['opening_hours']['weekday_text'] != null) {
-    openingHours = List<String>.from(details['opening_hours']['weekday_text']);
-  }
-
-  // 写真URL（Rails側で生成済みの完全URLを受け取る）
-  final List<String> photos =
-      (details['photos'] as List<dynamic>?)?.cast<String>() ?? const [];
-
-  // レビュー
-  final List<Map<String, dynamic>> reviews =
-      (details['reviews'] as List<dynamic>?)
-          ?.map((r) => Map<String, dynamic>.from(r as Map))
-          .toList() ??
-      [];
-
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text(name),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (photos.isNotEmpty)
-                  SizedBox(
-                    height: 200,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: photos
-                          .map((url) => Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Image.network(url, fit: BoxFit.cover),
-                              ))
-                          .toList(),
-                    ),
-                  ),
-                const SizedBox(height: 10),
-                Text(address),
-                const SizedBox(height: 5),
-                Text('評価: $rating'),
-                const SizedBox(height: 5),
-                Text('電話: $phone'),
-                const SizedBox(height: 10),
-                if (openingHours.isNotEmpty) ...[
-                  const Text('営業時間:'),
-                  for (var line in openingHours) Text(line),
-                ],
-                const SizedBox(height: 10),
-                if (reviews.isNotEmpty) ...[
-                  const Text('レビュー:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  for (var review in reviews)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${review['author_name']} (${review['rating']}⭐)"),
-                          Text(review['text'] ?? '',
-                              style: const TextStyle(fontSize: 12)),
-                        ],
-                      ),
-                    ),
-                ],
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('閉じる'),
-          ),
-        ],
-      );
-    },
-  );
+  // ... (Implementation hidden)
 }
+*/
 
 final Logger _logger = Logger('MyApp');
 
@@ -107,64 +22,24 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  GoogleMapController? mapController;
-  final LatLng _center = const LatLng(35.6895, 139.6917); // 新宿仮置き
-  final Set<Marker> _markers = {};
-  bool _noResults = false;
+  // GoogleMapController? mapController;
+  // final LatLng _center = const LatLng(35.6895, 139.6917); // 新宿仮置き
+  // final Set<Marker> _markers = {};
+  // bool _noResults = false;
 
+  /*
   Future<LatLng> _getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return _center;
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      return _center;
-    }
-
-    Position position = await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 0,
-      ),
-    );
-    return LatLng(position.latitude, position.longitude);
+    // ...
   }
 
   void _onMapCreated(GoogleMapController controller) async {
-    debugPrint('Map created');
-    mapController = controller;
-    try {
-      LatLng current = await _getCurrentLocation();
-      mapController?.animateCamera(CameraUpdate.newLatLng(current));
-
-      final markers = await searchPlaces(context, widget.dishName, current);
-
-      setState(() {
-        _markers.addAll(markers.map((m) {
-          return m.copyWith(
-            onTapParam: () async {
-              final details = await fetchPlaceDetails(m.markerId.value);
-              showPlaceDetailsDialog(context, details);
-            },
-          );
-        }));
-        _noResults = markers.isEmpty;
-      });
-    } catch (e) {
-      _logger.warning('検索失敗: $e');
-      mapController?.animateCamera(CameraUpdate.newLatLng(_center));
-      setState(() {
-        _noResults = true;
-      });
-    }
+    // ...
   }
+  */
 
   @override
   void dispose() {
-    mapController?.dispose();
+    // mapController?.dispose();
     super.dispose();
   }
 
@@ -172,35 +47,11 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('${widget.dishName} のお店')),
-      body: Stack(
-        children: [
-          GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: _center,
-              zoom: 14.0,
-            ),
-            myLocationEnabled: true,
-            markers: _markers,
-          ),
-          if (_noResults)
-            Positioned(
-              top: 20,
-              left: 20,
-              right: 20,
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text(
-                  '近くに該当するお店が見つかりませんでした',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ),
-        ],
+      body: const Center(
+        child: Text(
+          'Map functionality is currently disabled.\n(Missing dependencies)',
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }

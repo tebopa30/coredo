@@ -5,7 +5,7 @@ plugins {
 }
 
 // 環境変数からキーを取得
-val mapsApiKey: String = System.getenv("GOOGLE_API_KEY") ?: ""
+// val mapsApiKey: String = System.getenv("GOOGLE_API_KEY") ?: ""
 
 android {
     namespace = "com.coredo_app"
@@ -31,17 +31,17 @@ android {
         versionName = "1.0"
 
         // ✅ Manifest に APIキーを渡す
-        manifestPlaceholders.put("PLACES_API_KEY", mapsApiKey)
+        // manifestPlaceholders.put("PLACES_API_KEY", "")
     }
 
-    buildTypes {
-        debug {
-            resValue("string", "maps_api_key", mapsApiKey)
-        }
-        release {
-            resValue("string", "maps_api_key", mapsApiKey)
-        }
-    }
+    //buildTypes {
+      //  debug {
+        //    resValue("string", "maps_api_key", "")
+        //}
+        //release {
+        //    resValue("string", "maps_api_key", "")
+        //}
+    //}
 }
 
 flutter {
