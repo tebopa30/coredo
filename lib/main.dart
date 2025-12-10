@@ -17,7 +17,7 @@ Future<void> main() async {
     debugPrint('${record.level.name}: ${record.time}: ${record.message}');
   });
   _logger.info('アプリ起動しました');
-  await MobileAds.instance.initialize();
+  //await MobileAds.instance.initialize();
   runApp(const MyApp());
 }
 
@@ -55,7 +55,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
-      overlayVideos: ['assets/21.mp4'], // ← 画像でも動画でもOK
+      overlayVideos: ['assets/21.mp4'],
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
