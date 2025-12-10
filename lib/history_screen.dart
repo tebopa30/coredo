@@ -70,10 +70,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
                 direction: DismissDirection.endToStart,
                 onDismissed: (direction) async {
-                  await deleteHistoryItemByValue(item); // 値ベースで削除
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('$item を削除しました')));
+                  await deleteHistoryItemByValue(item);
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('$item を削除しました'))
+                    );
                 },
                 child: ListTile(
                   title: Text('\n$item', textAlign: TextAlign.center),

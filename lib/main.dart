@@ -120,17 +120,17 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BannerAdWidget(),
+      bottomNavigationBar: _BannerAdWidget(),
     );
   }
 }
 
-class BannerAdWidget extends StatefulWidget {
+class _BannerAdWidget extends StatefulWidget {
   @override
   _BannerAdWidgetState createState() => _BannerAdWidgetState();
 }
 
-class _BannerAdWidgetState extends State<BannerAdWidget> {
+class _BannerAdWidgetState extends State<_BannerAdWidget> {
   late BannerAd _bannerAd;
   bool _isLoaded = false;
 

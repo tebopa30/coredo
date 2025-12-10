@@ -11,19 +11,19 @@ class BackgroundScaffold extends StatefulWidget {
   final Widget? bottomNavigationBar; 
 
   const BackgroundScaffold({
-    Key? key,
+    super.key,
     this.overlayVideos,
     required this.body,
     this.appBar,
     this.extendBodyBehindAppBar = false,
     this.bottomNavigationBar,
-  }) : super(key: key);
+  });
 
   @override
-  _BackgroundScaffoldState createState() => _BackgroundScaffoldState();
+  BackgroundScaffoldState createState() => BackgroundScaffoldState();
 }
 
-class _BackgroundScaffoldState extends State<BackgroundScaffold> {
+class BackgroundScaffoldState extends State<BackgroundScaffold> {
   VideoPlayerController? _videoController;
 
   @override
