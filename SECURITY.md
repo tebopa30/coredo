@@ -12,8 +12,8 @@ We provide security updates only for the following versions:
 If you discover a security vulnerability in **coredo_app**:
 
 - **Do not open a public issue.**
-- Please report privately via email: **tebopa30@gmail.com**
-- Include the following details:
+- Please use GitHub's **Private Vulnerability Reporting** feature available under the "Security" tab of this repository.
+- Include:
   - Steps to reproduce
   - Affected platform (iOS / Android)
   - Flutter/Dart version used
