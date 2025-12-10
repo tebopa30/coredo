@@ -60,6 +60,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
     if (!mounted) return;
 
     if (data.containsKey('next_questions')) {
+      if (context.mounted) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -71,6 +72,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
           ),
         ),
       );
+     }
     } else if (data.containsKey('result')) {
       final resultMap = data['result'] as Map<String, dynamic>;
       Navigator.push(
@@ -205,12 +207,14 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
 
   void sendAnswer(BuildContext context, String answer) async {
     final data = await ApiService.answer(widget.sessionId, answer);
+    if (!mounted) return;
 
     if (data.containsKey('next_questions')) {
       final next = data['next_questions'];
       if (next is List &&
           next.isNotEmpty &&
           next.first is Map<String, dynamic>) {
+        if (context.mounted) {
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -220,26 +224,31 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
             ),
           ),
         );
+        }
         return;
       } else if (next is List && next.isNotEmpty && next.first is String) {
         final resultMap = {"dish": next.join(", "), "description": "AIからの提案です"};
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultScreen(result: resultMap),
-          ),
-        );
+        if (context.mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ResultScreen(result: resultMap),
+            ),
+          );
+        }
         return;
       } else if (next is Map<String, dynamic>) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NextQuestionPage(
-              nextQuestions: [next],
-              sessionId: widget.sessionId,
+        if (context.mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NextQuestionPage(
+                nextQuestions: [next],
+                sessionId: widget.sessionId,
             ),
           ),
         );
+       }
         return;
       } else {
         debugPrint("Unexpected next_questions format: $next");
@@ -249,12 +258,14 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
 
     if (data.containsKey('result')) {
       final resultMap = data['result'] as Map<String, dynamic>;
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ResultScreen(result: resultMap),
-        ),
-      );
+      if (context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultScreen(result: resultMap),
+          ),
+        );
+      }
     } else {
       debugPrint("Unexpected API response: $data");
     }

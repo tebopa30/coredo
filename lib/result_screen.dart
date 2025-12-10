@@ -87,7 +87,7 @@ class _ResultScreenState extends State<ResultScreen> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.orange,
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -127,12 +127,12 @@ class _ResultScreenState extends State<ResultScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 30),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(color: Colors.orange, width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orange.withOpacity(0.2),
+                    color: Colors.orange,
                     blurRadius: 5,
                     offset: const Offset(0, 5),
                   ),

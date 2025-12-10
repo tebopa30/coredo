@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'question_flow.dart';
 import 'history_screen.dart';
 import 'components/background_scaffold.dart';
-import 'sound_manager.dart';
 import 'settings_screen.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -19,9 +17,6 @@ Future<void> main() async {
     debugPrint('${record.level.name}: ${record.time}: ${record.message}');
   });
   _logger.info('アプリ起動しました');
-  await dotenv.load(fileName: ".env");
-  _logger.info('dotenv loaded: ${dotenv.isInitialized}');
-  await SoundManager().init();
   await MobileAds.instance.initialize();
   runApp(const MyApp());
 }
@@ -66,7 +61,10 @@ class HomeScreen extends StatelessWidget {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings, color: Color.fromARGB(255, 75, 75, 75)),
+            icon: const Icon(
+              Icons.settings,
+              color: Color.fromARGB(255, 75, 75, 75),
+            ),
             onPressed: () {
               Navigator.pushNamed(context, '/settings');
             },
@@ -115,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                 'Coredo',
                 style: TextStyle(
                   fontSize: 12.0,
-                  color: Colors.white.withOpacity(0.5),
+                  color: Colors.white.withValues(alpha: 0.5),
                 ),
               ),
             ),
@@ -126,6 +124,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
 class BannerAdWidget extends StatefulWidget {
   @override
   _BannerAdWidgetState createState() => _BannerAdWidgetState();
@@ -156,9 +155,9 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
     return _isLoaded
         ? Container(
             alignment: Alignment.center,
-            child: AdWidget(ad: _bannerAd),
             width: _bannerAd.size.width.toDouble(),
             height: _bannerAd.size.height.toDouble(),
+            child: AdWidget(ad: _bannerAd),
           )
         : SizedBox.shrink();
   }
@@ -179,7 +178,9 @@ class SoundManager {
 
   Future<void> init() async {
     await _bgmPlayer.setReleaseMode(ReleaseMode.loop); // ループ再生
-    await _bgmPlayer.play(AssetSource('audio/437_long_BPM120.mp3')); // assets/audio/bgm.mp3
+    await _bgmPlayer.play(
+      AssetSource('audio/437_long_BPM120.mp3'),
+    ); // assets/audio/bgm.mp3
   }
 
   Future<void> stopBgm() async {
@@ -190,4 +191,3 @@ class SoundManager {
     await _bgmPlayer.setVolume(volume);
   }
 }
-

@@ -5,7 +5,7 @@
 
 //final logger = Logger();
 
-/// Rails API を叩いて店舗詳細を取得
+
 //Future<Map<String, dynamic>> fetchPlaceDetails(String placeId) async {
 //  final url = "http://10.0.2.2:3000/api/places/details?place_id=$placeId";
 
@@ -37,7 +37,6 @@
 //  };
 //}
 
-/// 店舗詳細ダイアログを表示
 //void showPlaceDetailsDialog(
 //  BuildContext context,
 //  Map<String, dynamic> details,
@@ -122,7 +121,6 @@
 //  );
 //}
 
-/// Rails API を叩いて検索結果をマーカーに変換
 //Future<Set<Marker>> searchPlaces(
 //  BuildContext context,
 //  String dishName,
