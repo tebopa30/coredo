@@ -15,6 +15,8 @@ class _QuestionFlowState extends State<QuestionFlow> {
   String prompt = '';
   List<String> options = [];
   String? overlayPath;
+  bool isLoading = true;
+  String? errorMessage;
 
   final List<String> _overlayPaths = [
     'assets/22.mp4',
@@ -37,6 +39,10 @@ class _QuestionFlowState extends State<QuestionFlow> {
   }
 
   Future<void> _loadFirstQuestion() async {
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
     try {
       final data = await ApiService.start();
       final nextQuestions = List<Map<String, dynamic>>.from(
@@ -49,9 +55,20 @@ class _QuestionFlowState extends State<QuestionFlow> {
           prompt = nextQuestions.first['question'] as String;
           options = List<String>.from(nextQuestions.first['options'] ?? []);
         });
+      } else {
+        setState(() {
+          errorMessage = '質問が見つかりませんでした';
+        });
       }
     } catch (e) {
       debugPrint('API error: $e');
+      setState(() {
+        errorMessage = 'エラーが発生しました: $e';
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -61,18 +78,18 @@ class _QuestionFlowState extends State<QuestionFlow> {
 
     if (data.containsKey('next_questions')) {
       if (context.mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => NextQuestionPage(
-            nextQuestions: List<Map<String, dynamic>>.from(
-              data['next_questions'],
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NextQuestionPage(
+              nextQuestions: List<Map<String, dynamic>>.from(
+                data['next_questions'],
+              ),
+              sessionId: sessionId,
             ),
-            sessionId: sessionId,
           ),
-        ),
-      );
-     }
+        );
+      }
     } else if (data.containsKey('result')) {
       final resultMap = data['result'] as Map<String, dynamic>;
       Navigator.push(
@@ -95,31 +112,38 @@ class _QuestionFlowState extends State<QuestionFlow> {
           Expanded(
             flex: 1,
             child: Center(
-              child: SingleChildScrollView(
-                child: IntrinsicWidth(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        prompt,
-                        style: const TextStyle(fontSize: 20),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 20),
-                      ...options.map(
-                        (opt) => Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: ElevatedButton(
-                            onPressed: () => nextQuestion(opt),
-                            child: Text(opt),
-                          ),
+              child: isLoading
+                  ? const CircularProgressIndicator()
+                  : errorMessage != null
+                  ? Text(
+                      errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                    )
+                  : SingleChildScrollView(
+                      child: IntrinsicWidth(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              prompt,
+                              style: const TextStyle(fontSize: 20),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                            ...options.map(
+                              (opt) => Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: ElevatedButton(
+                                  onPressed: () => nextQuestion(opt),
+                                  child: Text(opt),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
+                    ),
             ),
           ),
         ],
@@ -215,15 +239,15 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
           next.isNotEmpty &&
           next.first is Map<String, dynamic>) {
         if (context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NextQuestionPage(
-              nextQuestions: List<Map<String, dynamic>>.from(next),
-              sessionId: widget.sessionId,
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NextQuestionPage(
+                nextQuestions: List<Map<String, dynamic>>.from(next),
+                sessionId: widget.sessionId,
+              ),
             ),
-          ),
-        );
+          );
         }
         return;
       } else if (next is List && next.isNotEmpty && next.first is String) {
@@ -245,10 +269,10 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
               builder: (context) => NextQuestionPage(
                 nextQuestions: [next],
                 sessionId: widget.sessionId,
+              ),
             ),
-          ),
-        );
-       }
+          );
+        }
         return;
       } else {
         debugPrint("Unexpected next_questions format: $next");

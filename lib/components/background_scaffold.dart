@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:math';
 import 'package:coredo_app/sound_manager.dart';
+import 'package:coredo_app/components/banner_ad_widget.dart';
 
 class BackgroundScaffold extends StatefulWidget {
   final List<String>? overlayVideos; // 複数候補の動画パス
@@ -89,6 +90,7 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
           widget.body,
         ],
       ),
+      bottomNavigationBar: widget.bottomNavigationBar ?? const BannerAdWidget(),
     );
   }
 }

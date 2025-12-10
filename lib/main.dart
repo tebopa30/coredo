@@ -4,8 +4,10 @@ import 'question_flow.dart';
 import 'history_screen.dart';
 import 'components/background_scaffold.dart';
 import 'settings_screen.dart';
-import 'package:audioplayers/audioplayers.dart';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:coredo_app/components/banner_ad_widget.dart';
+import 'package:coredo_app/sound_manager.dart';
 
 final Logger _logger = Logger('MyApp');
 
@@ -17,7 +19,8 @@ Future<void> main() async {
     debugPrint('${record.level.name}: ${record.time}: ${record.message}');
   });
   _logger.info('アプリ起動しました');
-  //await MobileAds.instance.initialize();
+  await MobileAds.instance.initialize();
+  await SoundManager().init();
   runApp(const MyApp());
 }
 
@@ -120,74 +123,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: _BannerAdWidget(),
+      bottomNavigationBar: const BannerAdWidget(),
     );
-  }
-}
-
-class _BannerAdWidget extends StatefulWidget {
-  @override
-  _BannerAdWidgetState createState() => _BannerAdWidgetState();
-}
-
-class _BannerAdWidgetState extends State<_BannerAdWidget> {
-  late BannerAd _bannerAd;
-  bool _isLoaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _bannerAd = BannerAd(
-      adUnitId: 'ca-app-pub-3940256099942544/6300978111', // バナー広告ユニットID
-      size: AdSize.banner,
-      request: AdRequest(),
-      listener: BannerAdListener(
-        onAdLoaded: (_) => setState(() => _isLoaded = true),
-        onAdFailedToLoad: (ad, error) {
-          ad.dispose();
-        },
-      ),
-    )..load();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _isLoaded
-        ? Container(
-            alignment: Alignment.center,
-            width: _bannerAd.size.width.toDouble(),
-            height: _bannerAd.size.height.toDouble(),
-            child: AdWidget(ad: _bannerAd),
-          )
-        : SizedBox.shrink();
-  }
-
-  @override
-  void dispose() {
-    _bannerAd.dispose();
-    super.dispose();
-  }
-}
-
-class SoundManager {
-  static final SoundManager _instance = SoundManager._internal();
-  factory SoundManager() => _instance;
-  SoundManager._internal();
-
-  final AudioPlayer _bgmPlayer = AudioPlayer();
-
-  Future<void> init() async {
-    await _bgmPlayer.setReleaseMode(ReleaseMode.loop); // ループ再生
-    await _bgmPlayer.play(
-      AssetSource('audio/437_long_BPM120.mp3'),
-    ); // assets/audio/bgm.mp3
-  }
-
-  Future<void> stopBgm() async {
-    await _bgmPlayer.stop();
-  }
-
-  Future<void> setVolume(double volume) async {
-    await _bgmPlayer.setVolume(volume);
   }
 }
