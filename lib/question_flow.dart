@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:coredo_app/services/api_service.dart';
 import 'package:coredo_app/result_screen.dart';
 import 'components/background_scaffold.dart';
+import 'package:coredo_app/components/interstitial_ad_widget.dart';
 
 class QuestionFlow extends StatefulWidget {
   const QuestionFlow({super.key});
@@ -35,6 +36,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
   @override
   void initState() {
     super.initState();
+    AdManager().loadInterstitialAd();
     _loadFirstQuestion();
   }
 
@@ -283,12 +285,14 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
     if (data.containsKey('result')) {
       final resultMap = data['result'] as Map<String, dynamic>;
       if (context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultScreen(result: resultMap),
-          ),
-        );
+        AdManager().showInterstitialAd(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ResultScreen(result: resultMap),
+            ),
+          );
+        });
       }
     } else {
       debugPrint("Unexpected API response: $data");

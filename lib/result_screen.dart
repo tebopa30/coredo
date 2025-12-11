@@ -25,8 +25,9 @@ class _ResultScreenState extends State<ResultScreen> {
 
     // 履歴保存（fromHistoryでない場合のみ）
     final dishName = widget.result['dish'] ?? "不明な料理";
+    final description = widget.result['description'] ?? "説明なし";
     if (dishName.isNotEmpty && widget.result['fromHistory'] != true) {
-      saveHistory(dishName);
+      saveHistory(dishName, description);
     }
   }
 
@@ -36,10 +37,10 @@ class _ResultScreenState extends State<ResultScreen> {
     super.dispose();
   }
 
-  Future<void> saveHistory(String dishName) async {
+  Future<void> saveHistory(String dishName, String description) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> history = prefs.getStringList('history') ?? [];
-    history.add(dishName);
+    history.add('$dishName|$description');
     await prefs.setStringList('history', history);
   }
 
@@ -109,6 +110,9 @@ class _ResultScreenState extends State<ResultScreen> {
   Widget build(BuildContext context) {
     final dishName = widget.result['dish'] ?? "不明な料理";
     final description = widget.result['description'] ?? "説明なし";
+    if (dishName.isNotEmpty && widget.result['fromHistory'] != true) {
+      saveHistory(dishName, description);
+    }
 
     return BackgroundScaffold(
       overlayVideos: ['assets/20.mp4'], // ← 固定の背景動画を設定
@@ -127,7 +131,7 @@ class _ResultScreenState extends State<ResultScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 30),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.orange,
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(color: Colors.orange, width: 2),
                 boxShadow: [
@@ -140,9 +144,9 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
               child: Text.rich(
                 TextSpan(
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
-                    color: Colors.orange,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                   children: [
@@ -152,7 +156,16 @@ class _ResultScreenState extends State<ResultScreen> {
                       style: const TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: Colors.orange,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const TextSpan(text: '\n'),
+                    TextSpan(
+                      text: description,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
@@ -169,14 +182,6 @@ class _ResultScreenState extends State<ResultScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    description,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                   const SizedBox(height: 20),
                   const Text(
                     '',

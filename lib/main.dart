@@ -4,9 +4,8 @@ import 'question_flow.dart';
 import 'history_screen.dart';
 import 'components/background_scaffold.dart';
 import 'settings_screen.dart';
-
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:coredo_app/components/banner_ad_widget.dart';
+//import 'package:coredo_app/components/banner_ad_widget.dart';
 import 'package:coredo_app/sound_manager.dart';
 
 final Logger _logger = Logger('MyApp');
@@ -123,7 +122,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const BannerAdWidget(),
+      //bottomNavigationBar: const BannerAdWidget(),
     );
   }
 }
