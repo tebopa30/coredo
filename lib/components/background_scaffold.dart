@@ -70,14 +70,17 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
       extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
       body: Stack(
         children: [
+          Container(
+            color: Colors.lightGreen,
+          ),
           // 🎬 選ばれた動画を重ねる
           if (_videoController != null && _videoController!.value.isInitialized)
             Transform.translate(
-              offset: const Offset(0, 220),
+              offset: const Offset(0, 60),
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: Transform.scale(
-                  scale: 1.6,
+                  scale: 1.1,
                   child: SizedBox(
                     width: _videoController!.value.size.width,
                     height: _videoController!.value.size.height,

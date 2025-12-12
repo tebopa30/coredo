@@ -33,8 +33,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.orange,
+            backgroundColor: Colors.orange,
+            foregroundColor: Colors.white,
             side: const BorderSide(color: Colors.orange, width: 2),
             elevation: 0,
           ),
