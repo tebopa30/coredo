@@ -71,12 +71,12 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
       body: Stack(
         children: [
           Container(
-            color: Colors.lightGreen,
+            color: const Color.fromRGBO(247, 205, 143, 1),
           ),
           // 🎬 選ばれた動画を重ねる
           if (_videoController != null && _videoController!.value.isInitialized)
             Transform.translate(
-              offset: const Offset(0, 60),
+              offset: const Offset(0, 70),
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: Transform.scale(

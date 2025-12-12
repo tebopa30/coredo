@@ -33,9 +33,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.orange,
+            backgroundColor: const Color.fromARGB(255, 253, 166, 35),
             foregroundColor: Colors.white,
-            side: const BorderSide(color: Colors.orange, width: 2),
+            side: const BorderSide(color: Color.fromARGB(255, 253, 166, 35), width: 2),
             elevation: 0,
           ),
         ),
@@ -114,7 +114,7 @@ class HomeScreen extends StatelessWidget {
               child: Text(
                 'Coredo',
                 style: TextStyle(
-                  fontSize: 12.0,
+                  fontSize: 24.0,
                   color: Colors.white.withValues(alpha: 0.5),
                 ),
               ),

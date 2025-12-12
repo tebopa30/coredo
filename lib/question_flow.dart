@@ -130,7 +130,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
                           children: [
                             Text(
                               prompt,
-                              style: const TextStyle(fontSize: 20),
+                              style: const TextStyle(fontSize: 20, color: Colors.white),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 20),
@@ -209,7 +209,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
                     children: [
                       Text(
                         question,
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 20, color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 8),
@@ -287,7 +287,9 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
     if (data.containsKey('result')) {
       final resultMap = data['result'] as Map<String, dynamic>;
       if (context.mounted) {
-        AdManager().showInterstitialAd(() {
+        final adManager = AdManager();
+        adManager.loadInterstitialAd();
+        adManager.showInterstitialAd(() {
           Navigator.push(
             context,
             MaterialPageRoute(

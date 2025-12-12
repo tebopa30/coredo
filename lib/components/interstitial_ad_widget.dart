@@ -1,4 +1,5 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter/foundation.dart'; // VoidCallback 用
 
 class AdManager {
   InterstitialAd? _interstitialAd;
@@ -18,21 +19,20 @@ class AdManager {
     );
   }
 
-  void showInterstitialAd(Function onAdClosed) {
+  void showInterstitialAd(VoidCallback onAdClosed) {
     if (_interstitialAd != null) {
-      _interstitialAd!.fullScreenContentCallback =
-          FullScreenContentCallback(
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
           ad.dispose();
-          onAdClosed(); // 広告終了後に結果画面へ遷移
+          onAdClosed();
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
           ad.dispose();
-          onAdClosed(); // 失敗しても遷移
+          onAdClosed();
         },
       );
       _interstitialAd!.show();
-      _interstitialAd = null;
+      _interstitialAd = null; // 再利用不可なので null にする
     } else {
       onAdClosed(); // 読み込み失敗時はそのまま遷移
     }
