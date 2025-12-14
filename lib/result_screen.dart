@@ -66,6 +66,9 @@ class _ResultScreenState extends State<ResultScreen> {
         url =
             'https://www.ubereats.com/search?q=${Uri.encodeComponent(dishName)}';
         break;
+      case 'cookpad': // ← 追加
+        url = 'https://cookpad.com/search/${Uri.encodeComponent(dishName)}';
+        break;
       default:
         return;
     }
@@ -76,10 +79,12 @@ class _ResultScreenState extends State<ResultScreen> {
     }
   }
 
-  Widget _buildAppButton(String appName, String logoPath, String dishName) {
+  Widget _buildAppButton(String appName, String logoPath, String dishName, String label) {
     return InkWell(
       onTap: () => _launchExternalApp(appName, dishName),
-      child: Container(
+      child: Column(
+        children: [
+          Container(
         width: 50,
         height: 50,
         padding: const EdgeInsets.all(1),
@@ -102,6 +107,18 @@ class _ResultScreenState extends State<ResultScreen> {
             fit: BoxFit.contain,
           ),
         ),
+      ),
+      const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
       ),
     );
   }
@@ -200,26 +217,37 @@ class _ResultScreenState extends State<ResultScreen> {
                         'googleMaps',
                         'assets/google_maps_logo.png',
                         dishName,
+                        'Google Maps',
                       ),
                       _buildAppButton(
                         'yahooMaps',
                         'assets/yahoo_maps_logo.png',
                         dishName,
+                        'Yahoo Maps',
                       ),
                       _buildAppButton(
                         'hotpepper',
                         'assets/hotpepper_logo.png',
                         dishName,
+                        'Hotpepper',
                       ),
                       _buildAppButton(
                         'tabelog',
                         'assets/tabelog_logo.png',
                         dishName,
+                        'Tabelog',
                       ),
                       _buildAppButton(
                         'ubereats',
                         'assets/ubereats_logo.png',
                         dishName,
+                        'Uber Eats'
+                      ),
+                      _buildAppButton(
+                        'cookpad',
+                        'assets/cookpad_logo.png',
+                        dishName,
+                        'Cookpad',
                       ),
                     ],
                   ),
