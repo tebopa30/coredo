@@ -78,7 +78,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           Column(
             children: [
-              const Spacer(flex: 4),
+              const Spacer(flex: 3),
               Expanded(
                 flex: 1,
                 child: Center(
@@ -109,16 +109,18 @@ class HomeScreen extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Text(
-                'Coredo',
-                style: TextStyle(
-                  fontSize: 24.0,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Text(
+                  'Coredo',
+                  style: TextStyle(
+                  fontSize: 12.0,
                   color: Colors.white.withValues(alpha: 0.5),
                 ),
               ),
             ),
+          ),
           ),
         ],
       ),

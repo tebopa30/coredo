@@ -205,13 +205,10 @@ class _ResultScreenState extends State<ResultScreen> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 3,
-                    childAspectRatio: 1.4,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    alignment: WrapAlignment.center,
                     children: [
                       _buildAppButton(
                         'googleMaps',
