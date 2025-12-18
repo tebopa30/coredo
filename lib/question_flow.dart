@@ -291,7 +291,6 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
       final resultMap = data['result'] as Map<String, dynamic>;
       if (context.mounted) {
         final adManager = AdManager();
-        adManager.loadInterstitialAd();
         adManager.showInterstitialAd(() {
           Navigator.push(
             context,
