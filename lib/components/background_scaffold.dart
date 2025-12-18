@@ -37,7 +37,9 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
       final selectedPath =
           widget.overlayVideos![random.nextInt(widget.overlayVideos!.length)];
 
-      if (selectedPath.toLowerCase().endsWith('.mp4')) {
+      if (_videoController != null) {
+        _videoController!.dispose();
+      }
         _videoController = VideoPlayerController.asset(selectedPath)
           ..setLooping(false)
           ..initialize().then((_) {
@@ -45,7 +47,6 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
             _videoController!.play();
             setState(() {});
           });
-      }
     }
     SoundManager().isSoundOn.addListener(_updateVolume);
   }
@@ -59,7 +60,11 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
   @override
   void dispose() {
     SoundManager().isSoundOn.removeListener(_updateVolume);
-    _videoController?.dispose();
+    if (_videoController != null) {
+    _videoController!.pause();
+    _videoController!.seekTo(Duration.zero);
+    _videoController!.dispose();
+  }
     super.dispose();
   }
 

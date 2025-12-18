@@ -132,7 +132,7 @@ class _ResultScreenState extends State<ResultScreen> {
     }
 
     return BackgroundScaffold(
-      overlayVideos: ['assets/20.mp4'], // ← 固定の背景動画を設定
+      overlayVideos: ['assets/20.mp4'],
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -141,136 +141,100 @@ class _ResultScreenState extends State<ResultScreen> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // Speech Bubble in the center
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 30),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
+      // Speech Bubble
+      Positioned(
+        top: MediaQuery.of(context).size.height * 0.4,
+        left: 30,
+        right: 30,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.orange,
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(color: Colors.orange, width: 2),
+            boxShadow: [
+              BoxShadow(
                 color: Colors.orange,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: Colors.orange, width: 2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.orange,
-                    blurRadius: 5,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
+                blurRadius: 5,
+                offset: const Offset(0, 5),
               ),
-              child: Text.rich(
+            ],
+          ),
+          child: Text.rich(
+            TextSpan(
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+              children: [
+                const TextSpan(text: 'これはどうかな？'),
                 TextSpan(
-                  style: TextStyle(
+                  text: '\n$dishName',
+                  style: const TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const TextSpan(text: '\n'),
+                TextSpan(
+                  text: description,
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
-                  children: [
-                    const TextSpan(text: 'これはどうかな？'),
-                    TextSpan(
-                      text: '\n$dishName',
-                      style: const TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const TextSpan(text: '\n'),
-                    TextSpan(
-                      text: description,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
                 ),
-                textAlign: TextAlign.center,
-              ),
+              ],
             ),
+            textAlign: TextAlign.center,
           ),
-          // Bottom content (Description and Buttons)
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 20),
-                  const Text(
-                    '',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    alignment: WrapAlignment.center,
-                    children: [
-                      _buildAppButton(
-                        'googleMaps',
-                        'assets/google_maps_logo.png',
-                        dishName,
-                        'Google Maps',
-                      ),
-                      _buildAppButton(
-                        'yahooMaps',
-                        'assets/yahoo_maps_logo.png',
-                        dishName,
-                        'Yahoo Maps',
-                      ),
-                      _buildAppButton(
-                        'hotpepper',
-                        'assets/hotpepper_logo.png',
-                        dishName,
-                        'Hotpepper',
-                      ),
-                      _buildAppButton(
-                        'tabelog',
-                        'assets/tabelog_logo.png',
-                        dishName,
-                        'Tabelog',
-                      ),
-                      _buildAppButton(
-                        'ubereats',
-                        'assets/ubereats_logo.png',
-                        dishName,
-                        'Uber Eats'
-                      ),
-                      _buildAppButton(
-                        'cookpad',
-                        'assets/cookpad_logo.png',
-                        dishName,
-                        'Cookpad',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 0),
-                  IntrinsicWidth(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.popUntil(
-                              context,
-                              (route) => route.isFirst,
-                            );
-                          },
-                          child: const Text('メインに戻る'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
-    );
-  }
+
+      // Bottom icons
+      Positioned(
+        bottom: 100,
+        left: 20,
+        right: 20,
+        child: SizedBox(
+          height: 300,
+          child: GridView.count(
+            crossAxisCount: 3,
+            crossAxisSpacing: 5,
+            mainAxisSpacing: 5,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              _buildAppButton('googleMaps', 'assets/google_maps_logo.png', dishName, 'Google Maps'),
+              _buildAppButton('yahooMaps', 'assets/yahoo_maps_logo.png', dishName, 'Yahoo Maps'),
+              _buildAppButton('hotpepper', 'assets/hotpepper_logo.png', dishName, 'Hotpepper'),
+              _buildAppButton('tabelog', 'assets/tabelog_logo.png', dishName, 'Tabelog'),
+              _buildAppButton('ubereats', 'assets/ubereats_logo.png', dishName, 'Uber Eats'),
+              _buildAppButton('cookpad', 'assets/cookpad_logo.png', dishName, 'Cookpad'),
+            ],
+          ),
+        ),
+      ),
+
+      // Return button
+      Positioned(
+        bottom: 20,
+        left: 0,
+        right: 0,
+        child: Center(
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: const Text('メインに戻る'),
+          ),
+        ),
+      ),
+    ],
+  ),
+ );
+ }
 }

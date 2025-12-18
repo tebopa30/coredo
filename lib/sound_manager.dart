@@ -17,14 +17,14 @@ class SoundManager {
     isSoundOn.value = prefs.getBool('is_sound_on') ?? true;
 
     await _bgmPlayer.setReleaseMode(ReleaseMode.loop);
-    await _bgmPlayer.play(AssetSource('audio/437_long_BPM120.mp3'), volume: isSoundOn.value ? 1.0 : 0.0);
+    await _bgmPlayer.play(AssetSource('audio/437_long_BPM120.mp3'), volume: isSoundOn.value ? 0.3 : 0.0);
     _updateVolume();
 
     isSoundOn.addListener(_updateVolume);
   }
 
   void _updateVolume() {
-    _bgmPlayer.setVolume(isSoundOn.value ? 1.0 : 0.0);
+    _bgmPlayer.setVolume(isSoundOn.value ? 0.3 : 0.0);
   }
 
   Future<void> setSound(bool value) async {

@@ -43,6 +43,13 @@ class _QuestionFlowState extends State<QuestionFlow> {
     _loadFirstQuestion();
     player.play(AssetSource('audio/1.m4a'));
   }
+  @override
+  void dispose() {
+    player.stop();      // 再生停止
+    player.release();   // リソース解放
+    player.dispose();   // インスタンス破棄
+    super.dispose();
+  }
 
   Future<void> _loadFirstQuestion() async {
     setState(() {
@@ -84,7 +91,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
 
     if (data.containsKey('next_questions')) {
       if (context.mounted) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => NextQuestionPage(
@@ -98,7 +105,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
       }
     } else if (data.containsKey('result')) {
       final resultMap = data['result'] as Map<String, dynamic>;
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => ResultScreen(result: resultMap),
@@ -197,7 +204,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
     final options = List<String>.from(widget.nextQuestions.first['options']);
 
     return BackgroundScaffold(
-      overlayVideos: _overlayPaths,
+      overlayVideos: [overlayPath!],
       body: Column(
         children: [
           const Spacer(flex: 2),
@@ -246,7 +253,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
           next.isNotEmpty &&
           next.first is Map<String, dynamic>) {
         if (context.mounted) {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => NextQuestionPage(
@@ -260,7 +267,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
       } else if (next is List && next.isNotEmpty && next.first is String) {
         final resultMap = {"dish": next.join(", "), "description": "AIからの提案です"};
         if (context.mounted) {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => ResultScreen(result: resultMap),
@@ -270,7 +277,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
         return;
       } else if (next is Map<String, dynamic>) {
         if (context.mounted) {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => NextQuestionPage(
@@ -292,7 +299,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
       if (context.mounted) {
         final adManager = AdManager();
         adManager.showInterstitialAd(() {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => ResultScreen(result: resultMap),
