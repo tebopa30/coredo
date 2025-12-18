@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Coredo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -88,7 +89,7 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         ElevatedButton(
-                          child: const Text('ごはんにする'),
+                          child: const Text('食事を決める'),
                           onPressed: () {
                             Navigator.pushNamed(context, '/question');
                           },
