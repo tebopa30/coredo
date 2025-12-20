@@ -18,14 +18,14 @@ class SoundManager {
     isSoundOn.value = prefs.getBool('is_sound_on') ?? true;
 
     await _bgmPlayer.setReleaseMode(ReleaseMode.loop);
-    await _bgmPlayer.play(AssetSource('audio/437_long_BPM120.mp3'), volume: isSoundOn.value ? 0.3 : 0.0);
+    await _bgmPlayer.play(AssetSource('audio/437_long_BPM120.mp3'), volume: isSoundOn.value ? 0.1 : 0.0);
     _updateVolume();
 
     isSoundOn.addListener(_updateVolume);
   }
 
   void _updateVolume() {
-    _bgmPlayer.setVolume(isSoundOn.value ? 0.3 : 0.0);
+    _bgmPlayer.setVolume(isSoundOn.value ? 0.1 : 0.0);
   }
 
   Future<void> setSound(bool value) async {
@@ -37,6 +37,10 @@ class SoundManager {
 
 class AudioManager {
   static final AudioPlayer _player = AudioPlayer();
+
+  static double seVolume = 1.0; // 効果音の基本音量
+
+  static bool get isSoundOn => SoundManager().isSoundOn.value;
 
   static final List<String> _audioPaths = [
     'audio/1.m4a',
@@ -53,30 +57,31 @@ class AudioManager {
     'audio/12.m4a',
   ];
 
-  static void playRandom() {
-    final randomPath = _audioPaths[Random().nextInt(_audioPaths.length)];
-    _player.stop();
-    _player.setVolume(1.0);
-    _player.play(AssetSource(randomPath));
-  }
-
   static Future<void> play(String path) async {
     await _player.stop();
-    await _player.setVolume(1.0);
+    await _player.setVolume(isSoundOn ? seVolume : 0.0);
     await _player.play(AssetSource(path));
   }
+
+  static Future<void> playFromList(List<String> paths) async {
+    final randomPath = paths[Random().nextInt(paths.length)];
+    await _player.stop();
+    await _player.setVolume(isSoundOn ? seVolume : 0.0);
+    await _player.play(AssetSource(randomPath));
+  }
+
+  static Future<void> playRandom() async {
+    final randomPath = _audioPaths[Random().nextInt(_audioPaths.length)];
+    await _player.stop();
+    await _player.setVolume(isSoundOn ? seVolume : 0.0);
+    await _player.play(AssetSource(randomPath));
+  }
+
   static const List<String> setA = [
     'audio/8.m4a',
     'audio/9.m4a',
     'audio/11.m4a',
   ];
-  
-  static Future<void> playFromList(List<String> paths) async {
-    final randomPath = paths[Random().nextInt(paths.length)];
-    await _player.stop();
-    await _player.setVolume(1.0);
-    await _player.play(AssetSource(randomPath));
-  }
 
   static Future<void> playSetA() async {
     await playFromList(setA);

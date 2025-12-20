@@ -19,6 +19,12 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    _initAsync();
+  });
+}
+
+  Future<void> _initAsync() async {
     final sessionId = widget.result['session_id'];
     try {
       channel = WebSocketChannel.connect(
