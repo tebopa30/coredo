@@ -5,6 +5,7 @@ import 'package:coredo_app/result_screen.dart';
 import 'components/background_scaffold.dart';
 import 'package:coredo_app/components/interstitial_ad_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:coredo_app/sound_manager.dart';
 
 class QuestionFlow extends StatefulWidget {
   const QuestionFlow({super.key});
@@ -41,13 +42,11 @@ class _QuestionFlowState extends State<QuestionFlow> {
     super.initState();
     AdManager().loadInterstitialAd();
     _loadFirstQuestion();
-    player.play(AssetSource('audio/1.m4a'));
+    AudioManager.playRandom();
   }
   @override
   void dispose() {
-    player.stop();      // 再生停止
-    player.release();   // リソース解放
-    player.dispose();   // インスタンス破棄
+    AudioManager.dispose();
     super.dispose();
   }
 
@@ -199,6 +198,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
 
   @override
   Widget build(BuildContext context) {
+    AudioManager.playRandom();
     overlayPath ??= _overlayPaths[Random().nextInt(_overlayPaths.length)];
     final question = widget.nextQuestions.first['question'] as String;
     final options = List<String>.from(widget.nextQuestions.first['options']);
