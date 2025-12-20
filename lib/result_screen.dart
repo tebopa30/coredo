@@ -20,9 +20,14 @@ class _ResultScreenState extends State<ResultScreen> {
   void initState() {
     super.initState();
     final sessionId = widget.result['session_id'];
-    channel = WebSocketChannel.connect(
-      Uri.parse("ws://10.0.2.2:3000/cable?session_id=$sessionId"),
-    );
+    try {
+      channel = WebSocketChannel.connect(
+        Uri.parse("ws://10.0.2.2:3000/cable?session_id=$sessionId"),
+      );
+    } catch (e) {
+      debugPrint("WebSocket error: $e");
+    }
+
     AudioManager.playSetA();
 
     // 履歴保存（fromHistoryでない場合のみ）
@@ -129,9 +134,6 @@ class _ResultScreenState extends State<ResultScreen> {
   Widget build(BuildContext context) {
     final dishName = widget.result['dish'] ?? "不明な料理";
     final description = widget.result['description'] ?? "説明なし";
-    if (dishName.isNotEmpty && widget.result['fromHistory'] != true) {
-      saveHistory(dishName, description);
-    }
 
     return BackgroundScaffold(
       overlayVideos: ['assets/20.mp4'],

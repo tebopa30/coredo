@@ -52,12 +52,22 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {    
-    AudioManager.play('assets/audio/6.m4a');
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    AudioManager.play('audio/6.m4a');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BackgroundScaffold(
       overlayVideos: ['assets/21.mp4'],
       appBar: AppBar(
@@ -117,16 +127,15 @@ class HomeScreen extends StatelessWidget {
                 child: Text(
                   'Coredo',
                   style: TextStyle(
-                  fontSize: 12.0,
-                  color: Colors.white.withValues(alpha: 0.5),
+                    fontSize: 12.0,
+                    color: Colors.white.withValues(alpha: 0.5),
+                  ),
                 ),
               ),
             ),
           ),
-          ),
         ],
       ),
-      //bottomNavigationBar: const BannerAdWidget(),
     );
   }
 }

@@ -38,13 +38,12 @@ class _QuestionFlowState extends State<QuestionFlow> {
   @override
   void initState() {
     super.initState();
-    AdManager().loadInterstitialAd();
-    _loadFirstQuestion();
+    AdManager().loadInterstitialAd();    
     AudioManager.playRandom();
+    _loadFirstQuestion();
   }
   @override
   void dispose() {
-    AudioManager.dispose();
     super.dispose();
   }
 
@@ -195,8 +194,18 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     AudioManager.playRandom();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     overlayPath ??= _overlayPaths[Random().nextInt(_overlayPaths.length)];
     final question = widget.nextQuestions.first['question'] as String;
     final options = List<String>.from(widget.nextQuestions.first['options']);
