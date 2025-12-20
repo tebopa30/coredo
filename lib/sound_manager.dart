@@ -39,24 +39,47 @@ class AudioManager {
   static final AudioPlayer _player = AudioPlayer();
 
   static final List<String> _audioPaths = [
-    'assets/いつもと違うジャンルに挑戦してみる？.m4a',
-    'assets/お腹空いてきたね.m4a',
-    'assets/それすごくいいね.m4a',
-    'assets/決まりだね.m4a',
-    'assets/今のお腹の空き具合は？.m4a',
-    'assets/今日はどんな気分？.m4a',
-    'assets/今日は何を食べようかな.m4a',
-    'assets/初めてのお店に行ってみるのもいいよね.m4a',
-    'assets/食べるのが楽しみだね.m4a',
-    'assets/早く食べたいね.m4a',
-    'assets/美味しいものを食べると幸せな気持ちになるよね.m4a',
-    'assets/和洋中だとどの気分？.m4a',
+    'assets/audio/1.m4a',
+    'assets/audio/2.m4a',
+    'assets/audio/3.m4a',
+    'assets/audio/4.m4a',
+    'assets/audio/5.m4a',
+    //'assets/audio/6.m4a',
+    'assets/audio/7.m4a',
+    //'assets/audio/8.m4a',
+    //'assets/audio/9.m4a',
+    'assets/audio/10.m4a',
+    //'assets/audio/11.m4a',
+    'assets/audio/12.m4a',
   ];
 
   static void playRandom() {
     final randomPath = _audioPaths[Random().nextInt(_audioPaths.length)];
     _player.stop();
+    _player.setVolume(1.0);
     _player.play(AssetSource(randomPath));
+  }
+
+  static Future<void> play(String path) async {
+    await _player.stop();
+    await _player.setVolume(1.0);
+    await _player.play(AssetSource(path));
+  }
+  static const List<String> setA = [
+    'assets/audio/8.m4a',
+    'assets/audio/9.m4a',
+    'assets/audio/11.m4a',
+  ];
+  
+  static Future<void> playFromList(List<String> paths) async {
+    final randomPath = paths[Random().nextInt(paths.length)];
+    await _player.stop();
+    await _player.setVolume(1.0);
+    await _player.play(AssetSource(randomPath));
+  }
+
+  static Future<void> playSetA() async {
+    await playFromList(setA);
   }
 
   static void dispose() {

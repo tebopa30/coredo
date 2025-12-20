@@ -56,7 +56,8 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
+    AudioManager.play('assets/audio/6.m4a');
     return BackgroundScaffold(
       overlayVideos: ['assets/21.mp4'],
       appBar: AppBar(

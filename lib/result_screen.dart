@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'components/background_scaffold.dart';
+import 'package:coredo_app/sound_manager.dart';
 
 class ResultScreen extends StatefulWidget {
   final Map<String, dynamic> result;
@@ -22,6 +23,7 @@ class _ResultScreenState extends State<ResultScreen> {
     channel = WebSocketChannel.connect(
       Uri.parse("ws://10.0.2.2:3000/cable?session_id=$sessionId"),
     );
+    AudioManager.playSetA();
 
     // 履歴保存（fromHistoryでない場合のみ）
     final dishName = widget.result['dish'] ?? "不明な料理";

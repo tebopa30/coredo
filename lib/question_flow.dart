@@ -4,7 +4,6 @@ import 'package:coredo_app/services/api_service.dart';
 import 'package:coredo_app/result_screen.dart';
 import 'components/background_scaffold.dart';
 import 'package:coredo_app/components/interstitial_ad_widget.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:coredo_app/sound_manager.dart';
 
 class QuestionFlow extends StatefulWidget {
@@ -35,7 +34,6 @@ class _QuestionFlowState extends State<QuestionFlow> {
     'assets/32.mp4',
     'assets/33.mp4',
   ];
-  final player = AudioPlayer();
 
   @override
   void initState() {
