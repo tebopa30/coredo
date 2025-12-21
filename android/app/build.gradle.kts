@@ -1,11 +1,18 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// 環境変数からキーを取得
-// val mapsApiKey: String = System.getenv("GOOGLE_API_KEY") ?: ""
+// ✅ keystoreProperties は android{} の外
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
 
 android {
     namespace = "com.coredo_app"
@@ -27,21 +34,26 @@ android {
         applicationId = "com.coredo_app"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
-
-        // ✅ Manifest に APIキーを渡す
-        // manifestPlaceholders.put("PLACES_API_KEY", "")
+        versionCode = 2
+        versionName = "1.0.1"
     }
 
-    //buildTypes {
-      //  debug {
-        //    resValue("string", "maps_api_key", "")
-        //}
-        //release {
-        //    resValue("string", "maps_api_key", "")
-        //}
-    //}
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String?
+            keyPassword = keystoreProperties["keyPassword"] as String?
+            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+            storePassword = keystoreProperties["storePassword"] as String?
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
+            isShrinkResources = false
+        }
+    }
 }
 
 flutter {
