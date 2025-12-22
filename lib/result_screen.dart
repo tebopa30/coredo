@@ -79,7 +79,7 @@ class _ResultScreenState extends State<ResultScreen> {
         url =
             'https://www.ubereats.com/search?q=${Uri.encodeComponent(dishName)}';
         break;
-      case 'cookpad': // ← 追加
+      case 'cookpad':
         url = 'https://cookpad.com/search/${Uri.encodeComponent(dishName)}';
         break;
       default:
@@ -141,82 +141,72 @@ class _ResultScreenState extends State<ResultScreen> {
     final dishName = widget.result['dish'] ?? "不明な料理";
     final description = widget.result['description'] ?? "説明なし";
 
-    return BackgroundScaffold(
-      overlayVideos: ['assets/20.mp4'],
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-      ),
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        children: [
-      // Speech Bubble
-      Positioned(
-        top: MediaQuery.of(context).size.height * 0.4,
-        left: 30,
-        right: 30,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 30),
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.orange,
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.orange, width: 2),
-            boxShadow: [
-              BoxShadow(
+return BackgroundScaffold(
+  overlayVideos: ['assets/20.mp4'],
+  extendBodyBehindAppBar: true,
+  appBar: AppBar(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    centerTitle: true,
+  ),
+  body: SafeArea(
+    child: Column(
+      children: [
+        // --- 吹き出し ---
+        Expanded(
+          flex: 4,
+          child: Center(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
                 color: Colors.orange,
-                blurRadius: 5,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Text.rich(
-            TextSpan(
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-              children: [
-                const TextSpan(text: 'これはどうかな？'),
-                TextSpan(
-                  text: '\n$dishName',
-                  style: const TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orange,
+                    blurRadius: 5,
+                    offset: Offset(0, 5),
                   ),
-                ),
-                const TextSpan(text: '\n'),
+                ],
+              ),
+              child: Text.rich(
                 TextSpan(
-                  text: description,
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
+                  children: [
+                    const TextSpan(text: 'これはどうかな？'),
+                    TextSpan(
+                      text: '\n$dishName',
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const TextSpan(text: '\n'),
+                    TextSpan(
+                      text: description,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
-              ],
+                textAlign: TextAlign.center,
+              ),
             ),
-            textAlign: TextAlign.center,
           ),
         ),
-      ),
 
-      // Bottom icons
-      Positioned(
-        bottom: 100,
-        left: 20,
-        right: 20,
-        child: SizedBox(
-          height: 300,
+        // --- アイコン ---
+        Expanded(
+          flex: 5,
           child: GridView.count(
             crossAxisCount: 3,
             crossAxisSpacing: 5,
             mainAxisSpacing: 5,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             children: [
               _buildAppButton('googleMaps', 'assets/google_maps_logo.png', dishName, 'Google Maps'),
               _buildAppButton('yahooMaps', 'assets/yahoo_maps_logo.png', dishName, 'Yahoo Maps'),
@@ -227,14 +217,10 @@ class _ResultScreenState extends State<ResultScreen> {
             ],
           ),
         ),
-      ),
 
-      // Return button
-      Positioned(
-        bottom: 20,
-        left: 0,
-        right: 0,
-        child: Center(
+        // --- 戻るボタン ---
+        Padding(
+          padding: const EdgeInsets.only(bottom: 20),
           child: ElevatedButton(
             onPressed: () {
               Navigator.popUntil(context, (route) => route.isFirst);
@@ -242,9 +228,9 @@ class _ResultScreenState extends State<ResultScreen> {
             child: const Text('メインに戻る'),
           ),
         ),
-      ),
-    ],
+      ],
+    ),
   ),
- );
- }
+);
+}
 }

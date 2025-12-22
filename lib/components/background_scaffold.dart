@@ -44,8 +44,8 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
           ..setLooping(false)
           ..initialize().then((_) {
             _updateVolume();
-            _videoController!.play();
             setState(() {});
+            _videoController!.play();
           });
     }
     SoundManager().isSoundOn.addListener(_updateVolume);

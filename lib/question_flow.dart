@@ -38,6 +38,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
   @override
   void initState() {
     super.initState();
+    overlayPath ??= _overlayPaths[Random().nextInt(_overlayPaths.length)];
     AdManager().loadInterstitialAd();    
     AudioManager.playRandom();
     _loadFirstQuestion();
@@ -87,7 +88,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
 
     if (data.containsKey('next_questions')) {
       if (context.mounted) {
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => NextQuestionPage(
@@ -101,7 +102,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
       }
     } else if (data.containsKey('result')) {
       final resultMap = data['result'] as Map<String, dynamic>;
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ResultScreen(result: resultMap),
@@ -112,7 +113,6 @@ class _QuestionFlowState extends State<QuestionFlow> {
 
   @override
   Widget build(BuildContext context) {
-    overlayPath ??= _overlayPaths[Random().nextInt(_overlayPaths.length)];
     return BackgroundScaffold(
       overlayVideos: [overlayPath!],
       body: Column(
@@ -196,6 +196,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
   @override
   void initState() {
     super.initState();
+    overlayPath ??= _overlayPaths[Random().nextInt(_overlayPaths.length)];
     AudioManager.playRandom();
   }
 
@@ -206,7 +207,6 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
 
   @override
   Widget build(BuildContext context) {
-    overlayPath ??= _overlayPaths[Random().nextInt(_overlayPaths.length)];
     final question = widget.nextQuestions.first['question'] as String;
     final options = List<String>.from(widget.nextQuestions.first['options']);
 
@@ -260,7 +260,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
           next.isNotEmpty &&
           next.first is Map<String, dynamic>) {
         if (context.mounted) {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => NextQuestionPage(
@@ -274,7 +274,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
       } else if (next is List && next.isNotEmpty && next.first is String) {
         final resultMap = {"dish": next.join(", "), "description": "AIからの提案です"};
         if (context.mounted) {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ResultScreen(result: resultMap),
@@ -284,7 +284,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
         return;
       } else if (next is Map<String, dynamic>) {
         if (context.mounted) {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => NextQuestionPage(
@@ -306,7 +306,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
       if (context.mounted) {
         final adManager = AdManager();
         adManager.showInterstitialAd(() {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ResultScreen(result: resultMap),
