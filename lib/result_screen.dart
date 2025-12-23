@@ -211,7 +211,7 @@ return BackgroundScaffold(
               crossAxisSpacing: 5,
               mainAxisSpacing: 2,
               childAspectRatio: 1.2,
-              physics: const NeverScrollableScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               children: [
                 _buildAppButton('googleMaps', 'assets/google_maps_logo.png', dishName, 'Google Maps'),
                 _buildAppButton('yahooMaps', 'assets/yahoo_maps_logo.png', dishName, 'Yahoo Maps'),

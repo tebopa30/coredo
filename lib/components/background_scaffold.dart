@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:math';
 import 'package:coredo_app/sound_manager.dart';
-//import 'package:coredo_app/components/banner_ad_widget.dart';
 
 class BackgroundScaffold extends StatefulWidget {
-  final List<String>? overlayVideos; // 複数候補の動画パス
+  final List<String>? overlayVideos;
   final Widget body;
   final PreferredSizeWidget? appBar;
   final bool extendBodyBehindAppBar;
-  final Widget? bottomNavigationBar; 
+  final Widget? bottomNavigationBar;
 
   const BackgroundScaffold({
     super.key,
@@ -26,60 +25,115 @@ class BackgroundScaffold extends StatefulWidget {
 
 class BackgroundScaffoldState extends State<BackgroundScaffold> {
   VideoPlayerController? _videoController;
+  bool _isInitializing = false;
+  String? _currentVideoPath;
 
   @override
   void initState() {
     super.initState();
-
-    if (widget.overlayVideos != null && widget.overlayVideos!.isNotEmpty) {
-      // 🎲 ランダムで1つ選ぶ（固定選択なら index を指定）
-      final random = Random();
-      final selectedPath =
-          widget.overlayVideos![random.nextInt(widget.overlayVideos!.length)];
-
-      if (_videoController != null) {
-        _videoController!.dispose();
-      }
-        _videoController = VideoPlayerController.asset(selectedPath)
-          ..setLooping(false)
-          ..initialize().then((_) {
-            _updateVolume();
-            setState(() {});
-            _videoController!.play();
-          });
-    }
     SoundManager().isSoundOn.addListener(_updateVolume);
+    _initVideo();
+  }
+
+  @override
+  void didUpdateWidget(covariant BackgroundScaffold oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // overlayVideos が変わったら動画も変える
+    if (widget.overlayVideos != oldWidget.overlayVideos) {
+      _initVideo(forceChange: true);
+    }
+  }
+
+  Future<void> _initVideo({bool forceChange = false}) async {
+    if (_isInitializing) return;
+
+    final videos = widget.overlayVideos;
+    if (videos == null || videos.isEmpty) return;
+
+    // ランダム選択（同じ動画なら再初期化しない）
+    final nextPath = videos[Random().nextInt(videos.length)];
+    if (!forceChange && nextPath == _currentVideoPath && _videoController != null) {
+      return;
+    }
+
+    _isInitializing = true;
+    _currentVideoPath = nextPath;
+
+    // 古いコントローラ破棄
+    final old = _videoController;
+    _videoController = null;
+    if (mounted) setState(() {});
+
+    if (old != null) {
+      try {
+        await old.pause();
+        await old.dispose();
+      } catch (_) {}
+    }
+
+    final controller = VideoPlayerController.asset(nextPath);
+    _videoController = controller;
+
+    try {
+      await controller.initialize();
+      controller.setLooping(false);
+      _updateVolume();
+
+      if (!mounted) {
+        await controller.dispose();
+        return;
+      }
+
+      setState(() {});
+      controller.play();
+    } catch (e) {
+      debugPrint("Video init error: $e");
+      try {
+        await controller.dispose();
+      } catch (_) {}
+      _videoController = null;
+      if (mounted) setState(() {});
+    } finally {
+      _isInitializing = false;
+    }
   }
 
   void _updateVolume() {
-    if (_videoController != null && _videoController!.value.isInitialized) {
-      _videoController!.setVolume(SoundManager().isSoundOn.value ? 1.0 : 0.0);
-    }
+    final c = _videoController;
+    if (c == null) return;
+    if (!c.value.isInitialized) return;
+
+    c.setVolume(SoundManager().isSoundOn.value ? 1.0 : 0.0);
   }
 
   @override
   void dispose() {
     SoundManager().isSoundOn.removeListener(_updateVolume);
-    if (_videoController != null) {
-    _videoController!.pause();
-    _videoController!.seekTo(Duration.zero);
-    _videoController!.dispose();
-  }
+
+    final c = _videoController;
+    _videoController = null;
+    if (c != null) {
+      c.pause();
+      c.dispose();
+    }
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = _videoController;
+
     return Scaffold(
       appBar: widget.appBar,
       extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
       body: Stack(
         children: [
-          Container(
-            color: const Color.fromRGBO(247, 205, 143, 1),
-          ),
-          // 🎬 選ばれた動画を重ねる
-          if (_videoController != null && _videoController!.value.isInitialized)
+          // 背景色（動画がない時のフォールバック）
+          Container(color: const Color.fromRGBO(247, 205, 143, 1)),
+
+          if (controller != null && controller.value.isInitialized)
             Transform.translate(
               offset: const Offset(0, 70),
               child: FittedBox(
@@ -87,14 +141,15 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
                 child: Transform.scale(
                   scale: 1.1,
                   child: SizedBox(
-                    width: _videoController!.value.size.width,
-                    height: _videoController!.value.size.height,
-                    child: VideoPlayer(_videoController!),
+                    width: controller.value.size.width,
+                    height: controller.value.size.height,
+                    child: VideoPlayer(controller),
                   ),
                 ),
               ),
             ),
-          // 上に重ねる UI
+
+          // UI を重ねる
           widget.body,
         ],
       ),
