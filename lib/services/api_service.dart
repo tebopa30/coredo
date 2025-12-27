@@ -4,9 +4,13 @@ import 'package:http/http.dart' as http;
 const baseUrl = 'https://coredo.click/api';
 
 class ApiService {
-  static Future<Map<String, dynamic>> start() async {
-    final r = await http.get(Uri.parse('$baseUrl/questions/start'),
-    headers: {'Accept': 'application/json'}
+  static Future<Map<String, dynamic>> start({required String mode}) async {
+    final r = await http.post(
+      Uri.parse('$baseUrl/questions/start'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'mode': mode,
+      }),
     );
     return jsonDecode(r.body);
   }

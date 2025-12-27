@@ -102,7 +102,35 @@ class _HomeScreenState extends State<HomeScreen> {
                         ElevatedButton(
                           child: const Text('食事を決める'),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/question');
+                            Navigator.pushNamed(
+                              context,
+                              '/question',
+                              arguments: {"mode": "meal"},
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
+
+                        ElevatedButton(
+                          child: const Text('旅行を決める'),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/question',
+                              arguments: {"mode": "travel"},
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
+
+                        ElevatedButton(
+                          child: const Text('遊びを決める'),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/question',
+                              arguments: {"mode": "play"},
+                            );
                           },
                         ),
                         const SizedBox(height: 20),

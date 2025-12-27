@@ -13,6 +13,7 @@ class QuestionFlow extends StatefulWidget {
 }
 
 class _QuestionFlowState extends State<QuestionFlow> {
+  bool _initialized = false;
   String sessionId = '';
   String prompt = '';
   List<String> options = [];
@@ -41,20 +42,33 @@ class _QuestionFlowState extends State<QuestionFlow> {
     overlayPath ??= _overlayPaths[Random().nextInt(_overlayPaths.length)];
     AdManager().loadInterstitialAd();    
     AudioManager.playRandom();
-    _loadFirstQuestion();
   }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map?;
+      final mode = args?["mode"] ?? "meal";
+      _loadFirstQuestion(mode);
+      _initialized = true;
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
   }
 
-  Future<void> _loadFirstQuestion() async {
+  Future<void> _loadFirstQuestion(String mode) async {
     setState(() {
       isLoading = true;
       errorMessage = null;
     });
     try {
-      final data = await ApiService.start();
+      final data = await ApiService.start(mode: mode);
+      debugPrint("API response: ${data.toString()}");
+      debugPrint("mode: $mode");
+
       final nextQuestions = List<Map<String, dynamic>>.from(
         data['next_questions'] ?? [],
       );
@@ -69,6 +83,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
         setState(() {
           errorMessage = '質問が見つかりませんでした';
         });
+        debugPrint("prompt: $prompt");
       }
     } catch (e) {
       debugPrint('API error: $e');
