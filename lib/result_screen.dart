@@ -96,6 +96,19 @@ class _ResultScreenState extends State<ResultScreen> {
         url = 'https://www.jalan.net/activity/';
         break;
 
+      // gift
+      case 'amazon':
+        url = 'https://www.amazon.co.jp/s?k=${Uri.encodeComponent(title)}';
+        break;
+
+      case 'rakuten':
+        url = 'https://search.rakuten.co.jp/search/mall/${Uri.encodeComponent(title)}/';
+        break;
+
+      case 'yahoo':
+        url = 'https://shopping.yahoo.co.jp/search?p=${Uri.encodeComponent(title)}';
+        break;
+
       // 共通
       case 'googleMaps':
         url = 'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(title)}';
@@ -130,6 +143,13 @@ class _ResultScreenState extends State<ResultScreen> {
           _buildAppButton('jalanPlay', 'assets/jalan_logo.png', title, 'じゃらん遊び'),
         ];
 
+      case 'gift':
+        return [
+          _buildAppButton('amazon', 'assets/amazon_logo.png', title, 'Amazon'),
+          _buildAppButton('rakuten', 'assets/rakuten_logo.png', title, '楽天市場'),
+          _buildAppButton('yahoo', 'assets/yahoo_logo.png', title, 'Yahoo!'),
+        ];
+
       default: // meal
         return [
           _buildAppButton('googleMaps', 'assets/google_maps_logo.png', title, 'Google Maps'),
@@ -149,8 +169,8 @@ class _ResultScreenState extends State<ResultScreen> {
       child: Column(
         children: [
           Container(
-            width: 90,
-            height: 90,
+            width: 70,
+            height: 70,
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -196,6 +216,8 @@ class _ResultScreenState extends State<ResultScreen> {
         return "こんな旅行先はどう？";
       case 'play':
         return "こんな遊びはどう？";
+      case 'gift':
+        return "こんなプレゼントはどう？";
       default:
         return "これはどうかな？";
     }
@@ -251,6 +273,8 @@ class _ResultScreenState extends State<ResultScreen> {
                           fontSize: 30,
                           color: Colors.blueAccent,
                           fontWeight: FontWeight.w600,
+                          decoration: TextDecoration.underline,
+                          decorationThickness: 2,
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () async {

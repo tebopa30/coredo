@@ -99,24 +99,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisCount: 2,
                   mainAxisSpacing: 20,
                   crossAxisSpacing: 20,
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
                   childAspectRatio: 3.5, 
                   children: [
                     ElevatedButton(
-                      child: Text('食事を決める'),
+                      child: Text('食事をする'),
                       onPressed: () => Navigator.pushNamed(context, '/question', arguments: {"mode": "meal"}),
                     ),
                     ElevatedButton(
-                      child: Text('旅行を決める'),
+                      child: Text('旅行に行く'),
                       onPressed: () => Navigator.pushNamed(context, '/question', arguments: {"mode": "travel"}),
                     ),
                     ElevatedButton(
-                      child: Text('遊びを決める'),
+                      child: Text('遊びに行く'),
                       onPressed: () => Navigator.pushNamed(context, '/question', arguments: {"mode": "play"}),
                     ),
                     ElevatedButton(
-                      child: Text('履歴を見る'),
-                      onPressed: () => Navigator.pushNamed(context, '/history'),
+                      child: Text('贈り物を選ぶ'),
+                      onPressed: () => Navigator.pushNamed(context, '/question', arguments: {"mode": "gift"}),
                     ),
                   ],
                 ),
@@ -128,12 +128,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
-                child: Text(
-                  'Coredo',
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    color: Colors.white.withValues(alpha: 0.5),
-                  ),
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pushNamed(context, '/history'),
+                  child: const Text('履歴を見る'),
                 ),
               ),
             ),

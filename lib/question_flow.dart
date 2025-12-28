@@ -290,18 +290,7 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
           );
         }
         return;
-      } else if (next is List && next.isNotEmpty && next.first is String) {
-        final resultMap = {"dish": next.join(", "), "description": "AIからの提案です"};
-        if (context.mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ResultScreen(result: resultMap),
-            ),
-          );
-        }
-        return;
-      } else if (next is Map<String, dynamic>) {
+      } if (next is Map<String, dynamic>) {
         if (context.mounted) {
           Navigator.push(
             context,

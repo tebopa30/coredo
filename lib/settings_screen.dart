@@ -9,10 +9,11 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BackgroundScaffold(
       appBar: AppBar(
-        title: const Text('設定'),
+        title: const Text('設定', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       extendBodyBehindAppBar: true,
       body: ValueListenableBuilder<bool>(
@@ -24,7 +25,7 @@ class SettingsScreen extends StatelessWidget {
               SwitchListTile(
                 title: const Text(
                   '音声',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 value: isSoundOn,
                 onChanged: (value) {
@@ -32,14 +33,14 @@ class SettingsScreen extends StatelessWidget {
                 },
                 secondary: Icon(
                   isSoundOn ? Icons.volume_up : Icons.volume_off,
-                  color: Colors.black54,
+                  color: Colors.white,
                 ),
               ),
               const Divider(),
               ListTile(
                 title: const Text(
                   'プライバシーポリシー',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
