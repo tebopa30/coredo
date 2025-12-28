@@ -131,7 +131,7 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
       body: Stack(
         children: [
           // 背景色（動画がない時のフォールバック）
-          Container(color: const Color.fromRGBO(247, 205, 143, 1)),
+          Container(color: const Color(0xFF1C1F2A)),
 
           if (controller != null && controller.value.isInitialized)
             Transform.translate(

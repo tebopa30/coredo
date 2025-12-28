@@ -5,6 +5,7 @@ import 'package:coredo_app/result_screen.dart';
 import 'components/background_scaffold.dart';
 import 'package:coredo_app/components/interstitial_ad_widget.dart';
 import 'package:coredo_app/sound_manager.dart';
+//import 'package:coredo_app/components/banner_ad_widget.dart';
 
 class QuestionFlow extends StatefulWidget {
   const QuestionFlow({super.key});
@@ -134,42 +135,44 @@ class _QuestionFlowState extends State<QuestionFlow> {
         children: [
           const Spacer(flex: 2),
           Expanded(
-            flex: 1,
-            child: Center(
-              child: isLoading
-                  ? const CircularProgressIndicator()
-                  : errorMessage != null
-                  ? Text(
-                      errorMessage!,
-                      style: const TextStyle(color: Colors.red),
-                    )
-                  : SingleChildScrollView(
-                      child: IntrinsicWidth(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              prompt,
-                              style: const TextStyle(fontSize: 20, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 20),
-                            ...options.map(
-                              (opt) => Padding(
-                                padding: const EdgeInsets.only(bottom: 10.0),
-                                child: ElevatedButton(
-                                  onPressed: () => nextQuestion(opt),
-                                  child: Text(opt),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+  flex: 1,
+  child: Center(
+    child: isLoading
+        ? const CircularProgressIndicator()
+        : errorMessage != null
+            ? Text(
+                errorMessage!,
+                style: const TextStyle(color: Colors.red),
+              )
+            : Column(
+                children: [
+                  Text(
+                    prompt,
+                    style: const TextStyle(fontSize: 24, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+
+                  // ★ ここを GridView に変更
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      childAspectRatio: 3.0,
+                      children: options.map((opt) {
+                        return ElevatedButton(
+                          onPressed: () => nextQuestion(opt),
+                          child: Text(opt),
+                        );
+                      }).toList(),
                     ),
+                  ),
+                ],
+              ),
+             ),
             ),
-          ),
         ],
       ),
     );
@@ -227,39 +230,40 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
 
     return BackgroundScaffold(
       overlayVideos: [overlayPath!],
+      //bottomNavigationBar: const BannerAdWidget(),
       body: Column(
         children: [
           const Spacer(flex: 2),
           Expanded(
             flex: 1,
             child: Center(
-              child: SingleChildScrollView(
-                child: IntrinsicWidth(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        question,
-                        style: const TextStyle(fontSize: 20, color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      ...options.map(
-                        (opt) => Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: ElevatedButton(
-                            onPressed: () => sendAnswer(context, opt),
-                            child: Text(opt),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+              child: Column(
+                children: [
+                  Text(
+                    question,
+          style: const TextStyle(fontSize: 24, color: Colors.white),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 20),
+        Expanded(
+          child: GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            childAspectRatio: 3.0,
+            children: options.map((opt) {
+              return ElevatedButton(
+                onPressed: () => sendAnswer(context, opt),
+                child: Text(opt),
+              );
+            }).toList(),
           ),
+        ),
+      ],
+    ),
+  ),
+),
         ],
       ),
     );

@@ -34,10 +34,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 253, 166, 35),
+            backgroundColor: const Color(0xFF4FC3F7),
             foregroundColor: Colors.white,
-            side: const BorderSide(color: Color.fromARGB(255, 253, 166, 35), width: 2),
+            side: const BorderSide(color: Color(0xFF4FC3F7), width: 2),
             elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
       ),
@@ -92,57 +95,30 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Spacer(flex: 3),
               Expanded(
-                flex: 1,
-                child: Center(
-                  child: IntrinsicWidth(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ElevatedButton(
-                          child: const Text('食事を決める'),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/question',
-                              arguments: {"mode": "meal"},
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 20),
-
-                        ElevatedButton(
-                          child: const Text('旅行を決める'),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/question',
-                              arguments: {"mode": "travel"},
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 20),
-
-                        ElevatedButton(
-                          child: const Text('遊びを決める'),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/question',
-                              arguments: {"mode": "play"},
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          child: const Text('履歴を見る'),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/history');
-                          },
-                        ),
-                      ],
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 20,
+                  crossAxisSpacing: 20,
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  childAspectRatio: 3.5, 
+                  children: [
+                    ElevatedButton(
+                      child: Text('食事を決める'),
+                      onPressed: () => Navigator.pushNamed(context, '/question', arguments: {"mode": "meal"}),
                     ),
-                  ),
+                    ElevatedButton(
+                      child: Text('旅行を決める'),
+                      onPressed: () => Navigator.pushNamed(context, '/question', arguments: {"mode": "travel"}),
+                    ),
+                    ElevatedButton(
+                      child: Text('遊びを決める'),
+                      onPressed: () => Navigator.pushNamed(context, '/question', arguments: {"mode": "play"}),
+                    ),
+                    ElevatedButton(
+                      child: Text('履歴を見る'),
+                      onPressed: () => Navigator.pushNamed(context, '/history'),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -155,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   'Coredo',
                   style: TextStyle(
-                    fontSize: 12.0,
+                    fontSize: 14.0,
                     color: Colors.white.withValues(alpha: 0.5),
                   ),
                 ),
