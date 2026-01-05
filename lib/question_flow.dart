@@ -23,18 +23,13 @@ class _QuestionFlowState extends State<QuestionFlow> {
   String? errorMessage;
 
   final List<String> _overlayPaths = [
-    'assets/22.mp4',
-    'assets/23.mp4',
-    'assets/24.mp4',
-    'assets/25.mp4',
-    'assets/26.mp4',
-    'assets/27.mp4',
-    'assets/28.mp4',
-    'assets/29.mp4',
-    'assets/30.mp4',
-    'assets/31.mp4',
-    'assets/32.mp4',
-    'assets/33.mp4',
+    'assets/winter/2.png',
+    'assets/winter/3.png',
+    'assets/winter/4.png',
+    'assets/winter/5.png',
+    'assets/winter/6.png',
+    'assets/winter/7.png',
+    'assets/winter/8.png',
   ];
 
   @override
@@ -197,18 +192,13 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
   String? overlayPath;
 
   final List<String> _overlayPaths = [
-    'assets/22.mp4',
-    'assets/23.mp4',
-    'assets/24.mp4',
-    'assets/25.mp4',
-    'assets/26.mp4',
-    'assets/27.mp4',
-    'assets/28.mp4',
-    'assets/29.mp4',
-    'assets/30.mp4',
-    'assets/31.mp4',
-    'assets/32.mp4',
-    'assets/33.mp4',
+    'assets/winter/2.png',
+    'assets/winter/3.png',
+    'assets/winter/4.png',
+    'assets/winter/5.png',
+    'assets/winter/6.png',
+    'assets/winter/7.png',
+    'assets/winter/8.png',
   ];
 
   @override
@@ -231,6 +221,16 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
     return BackgroundScaffold(
       overlayVideos: [overlayPath!],
       //bottomNavigationBar: const BannerAdWidget(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Column(
         children: [
           const Spacer(flex: 2),

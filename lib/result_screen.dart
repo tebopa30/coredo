@@ -230,7 +230,7 @@ class _ResultScreenState extends State<ResultScreen> {
     final mode = widget.result['extra']?['mode'] ?? 'meal';
 
     return BackgroundScaffold(
-      overlayVideos: ['assets/20.mp4'],
+      overlayVideos: ['assets/winter/1.png'],
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -304,6 +304,7 @@ class _ResultScreenState extends State<ResultScreen> {
               flex: 6,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Scrollbar(
                 child: GridView.count(
                   crossAxisCount: 3,
                   crossAxisSpacing: 10,
@@ -311,6 +312,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   childAspectRatio: 0.8,
                   physics: const BouncingScrollPhysics(),
                   children: buildButtons(mode, title),
+                 ),
                 ),
               ),
             ),
