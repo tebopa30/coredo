@@ -148,8 +148,6 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
                 ),
               ),
             ),
-
-          // UI を重ねる
           widget.body,
         ],
       ),

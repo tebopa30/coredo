@@ -230,14 +230,25 @@ class _ResultScreenState extends State<ResultScreen> {
     final mode = widget.result['extra']?['mode'] ?? 'meal';
 
     return BackgroundScaffold(
-      overlayVideos: ['assets/winter/1.png'],
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
       ),
-      body: SafeArea(
+      body: Stack(
+        children: [
+          Positioned(
+            top: 50,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              'assets/winter/1.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          
+       SafeArea(
         child: Column(
           children: [
             const Spacer(flex: 10),
@@ -330,6 +341,8 @@ class _ResultScreenState extends State<ResultScreen> {
           ],
         ),
       ),
-    );
+     ],
+    ),
+   );
   }
 }

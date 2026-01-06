@@ -34,9 +34,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF4FC3F7),
+            backgroundColor: const Color.fromARGB(255, 16, 175, 249),
             foregroundColor: Colors.white,
-            side: const BorderSide(color: Color(0xFF4FC3F7), width: 2),
+            side: const BorderSide(color: Colors.white, width: 2),
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
-      overlayVideos: ['assets/winter/9.png'],
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(
               Icons.settings,
-              color: Color.fromARGB(255, 75, 75, 75),
+              color: Color.fromARGB(255, 15, 15, 15),
             ),
             onPressed: () {
               Navigator.pushNamed(context, '/settings');
@@ -88,9 +88,17 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
+          Positioned(
+            top: 50,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              'assets/winter/9.png',
+              fit: BoxFit.cover,
+            ),
+          ),
           Column(
             children: [
               const Spacer(flex: 3),

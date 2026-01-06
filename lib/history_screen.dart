@@ -50,7 +50,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       body: Stack(
         children: [
           Image.asset(
-            'assets/bg1.png',
+            'assets/winter/bg1.png',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,

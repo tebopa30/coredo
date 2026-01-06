@@ -125,53 +125,75 @@ class _QuestionFlowState extends State<QuestionFlow> {
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
-      overlayVideos: [overlayPath!],
-      body: Column(
+            extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Stack(
         children: [
-          const Spacer(flex: 2),
-          Expanded(
-  flex: 1,
-  child: Center(
-    child: isLoading
-        ? const CircularProgressIndicator()
-        : errorMessage != null
-            ? Text(
-                errorMessage!,
-                style: const TextStyle(color: Colors.red),
-              )
-            : Column(
-                children: [
-                  Text(
-                    prompt,
-                    style: const TextStyle(fontSize: 24, color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
+          Positioned(
+            top: 50,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              overlayPath!,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Column(
+            children: [
+              const Spacer(flex: 2),
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: isLoading
+                      ? const CircularProgressIndicator()
+                      : errorMessage != null
+                          ? Text(
+                              errorMessage!,
+                              style: const TextStyle(color: Colors.red),
+                            )
+                          : Column(
+                              children: [
+                                Text(
+                                     prompt,
+                                     style: const TextStyle(fontSize: 24, color: Colors.white),
+                                     textAlign: TextAlign.center,
+                                 ),
+                                 const SizedBox(height: 24),
 
-                  // ★ ここを GridView に変更
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      childAspectRatio: 3.0,
-                      children: options.map((opt) {
-                        return ElevatedButton(
+                                 Expanded(
+                                   child: GridView.count(
+                                     crossAxisCount: 2,
+                                     crossAxisSpacing: 12,
+                                     mainAxisSpacing: 12,
+                                     padding: const EdgeInsets.symmetric(horizontal: 30),
+                                     childAspectRatio: 3.0,
+                                     children: options.map((opt) {
+                                       return ElevatedButton(
                           onPressed: () => nextQuestion(opt),
                           child: Text(opt),
                         );
                       }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-             ),
             ),
-        ],
-      ),
-    );
-  }
+           ),
+          ],
+         ),
+        ),
+       ),
+      ],
+     ),
+    ],
+   ),
+  );
+ }
 }
 
 class NextQuestionPage extends StatefulWidget {
@@ -219,51 +241,63 @@ class _NextQuestionPageState extends State<NextQuestionPage> {
     final options = List<String>.from(widget.nextQuestions.first['options']);
 
     return BackgroundScaffold(
-      overlayVideos: [overlayPath!],
-      //bottomNavigationBar: const BannerAdWidget(),
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          const Spacer(flex: 2),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: Column(
-                children: [
-                  Text(
-                    question,
-          style: const TextStyle(fontSize: 24, color: Colors.white),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 20),
-        Expanded(
-          child: GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            childAspectRatio: 3.0,
-            children: options.map((opt) {
-              return ElevatedButton(
-                onPressed: () => sendAnswer(context, opt),
-                child: Text(opt),
-              );
-            }).toList(),
+          Positioned(
+            top: 50,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              overlayPath!,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-      ],
-    ),
-  ),
-),
+          Column(
+            children: [
+              const Spacer(flex: 2),
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        question,
+                        style: const TextStyle(fontSize: 24, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: GridView.count(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          childAspectRatio: 3.0,
+                          children: options.map((opt) {
+                            return ElevatedButton(
+                              onPressed: () => sendAnswer(context, opt),
+                              child: Text(opt),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
