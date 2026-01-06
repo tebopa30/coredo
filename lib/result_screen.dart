@@ -4,7 +4,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'components/background_scaffold.dart';
 import 'package:coredo_app/sound_manager.dart';
-import 'package:flutter/gestures.dart';
 
 class ResultScreen extends StatefulWidget {
   final Map<String, dynamic> result;
@@ -16,6 +15,7 @@ class ResultScreen extends StatefulWidget {
 
 class _ResultScreenState extends State<ResultScreen> {
   late WebSocketChannel channel;
+  double _titleHighlight = 0.1;
 
   @override
   void initState() {
@@ -164,48 +164,58 @@ class _ResultScreenState extends State<ResultScreen> {
   // アイコンボタン
   // -----------------------------
   Widget _buildAppButton(String appName, String logoPath, String title, String label) {
-    return InkWell(
-      onTap: () => _launchExternalApp(appName, title),
-      child: Column(
-        children: [
-          Container(
-            width: 70,
-            height: 70,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0xFF4FC3F7),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
+    return StatefulBuilder(
+      builder: (context, setState) {
+      double highlight = 0.0;
+      return GestureDetector(
+        onTapDown: (_) => setState(() => highlight = 0.5), // ← 光る
+        onTapUp: (_) => setState(() => highlight = 0.1),     // ← 元に戻る
+        onTapCancel: () => setState(() => highlight = 0.1),
+        onTap: () => _launchExternalApp(appName, title),
+        child: Column(
+        children: [AnimatedContainer(
+              duration: const Duration(milliseconds: 120),
+              width: 70,
+              height: 70,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 1.0 - highlight), // ← 光り方を表現
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF4FC3F7).withValues(alpha: 0.8),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Image.asset(
+                  logoPath,
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.contain,
                 ),
-              ],
-            ),
-            child: Center(
-              child: Image.asset(
-                logoPath,
-                width: 80,
-                height: 80,
-                fit: BoxFit.contain,
               ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+
+            const SizedBox(height: 4),
+
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
+    },
+  );
+}
 
   // -----------------------------
   // mode 別の吹き出しテキスト
@@ -253,61 +263,97 @@ class _ResultScreenState extends State<ResultScreen> {
           children: [
             const Spacer(flex: 10),
 
-            // 吹き出し
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Color(0xFF2A2E3D),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xFF2A2E3D),
-                      blurRadius: 5,
-                      offset: Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Text.rich(
-                  TextSpan(
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    children: [
-                      TextSpan(text: modeLabel(mode)),
-                      TextSpan(
-                        text: '\n$title',
-                        style: const TextStyle(
-                          fontSize: 30,
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w600,
-                          decoration: TextDecoration.underline,
-                          decorationThickness: 2,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () async {
-                            final query = Uri.encodeComponent(title);
-                            final url = Uri.parse("https://www.google.com/search?q=$query");
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(url, mode: LaunchMode.externalApplication);
-                            }
-                          },
-                      ),
-                      const TextSpan(text: '\n'),
-                      TextSpan(
-                        text: description,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
+       // 吹き出し
+       Padding(
+         padding: const EdgeInsets.symmetric(horizontal: 30),
+         child: Container(
+           padding: const EdgeInsets.all(20),
+           decoration: BoxDecoration(
+             color: const Color(0xFF2A2E3D),
+             borderRadius: BorderRadius.circular(30),
+             boxShadow: [
+               BoxShadow(
+                 color: const Color(0xFF2A2E3D),
+                 blurRadius: 5,
+                 offset: const Offset(0, 5),
+               ),
+             ],
+           ),
+           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.center,
+             children: [
+        // mode ラベル
+        Text(
+          modeLabel(mode),
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
 
+        const SizedBox(height: 10),
+
+        // 🔥 タイトルを「押せるカード風」に変更
+GestureDetector(
+  onTapDown: (_) {
+    setState(() => _titleHighlight = 0.5); // ← 光る
+  },
+  onTapUp: (_) {
+    setState(() => _titleHighlight = 0.1); // ← 元に戻る
+  },
+  onTapCancel: () {
+    setState(() => _titleHighlight = 0.1);
+  },
+  onTap: () async {
+    final query = Uri.encodeComponent(title);
+    final url = Uri.parse("https://www.google.com/search?q=$query");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  },
+  child: AnimatedContainer(
+    duration: const Duration(milliseconds: 120),
+    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: _titleHighlight),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Wrap(
+      direction: Axis.horizontal,
+      spacing: 4,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        const Icon(Icons.search, color: Colors.blueAccent, size: 20),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 20,
+            color: Colors.blueAccent,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+
+        const SizedBox(height: 16),
+
+        // 説明文
+        Text(
+          description,
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
+            ),
+           ],
+         ),
+       ),
+     ),
             const Spacer(flex: 2),
 
             // アイコン群

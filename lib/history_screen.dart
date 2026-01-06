@@ -13,6 +13,7 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   List<String> history = [];
+  double _tileHighlight = 1.0; // ← タップ時の光り具合
 
   @override
   void initState() {
@@ -55,6 +56,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             width: double.infinity,
             height: double.infinity,
           ),
+
           ListView.builder(
             itemCount: uniqueHistory.length,
             itemBuilder: (context, index) {
@@ -81,28 +83,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     SnackBar(content: Text('$title を削除しました')),
                   );
                 },
-                child: ListTile(
-                  title: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '$title\n',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextSpan(
-                          text: description,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+
+                // 🔥 タップ時に光るようにする（最小限の修正）
+                child: GestureDetector(
+                  onTapDown: (_) => setState(() => _tileHighlight = 0.6),
+                  onTapUp: (_) => setState(() => _tileHighlight = 1.0),
+                  onTapCancel: () => setState(() => _tileHighlight = 1.0),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -111,15 +97,41 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           result: {
                             'title': title,
                             'description': description,
-                            'extra': {
-                              'mode': mode,
-                            },
+                            'extra': {'mode': mode},
                             'fromHistory': true,
                           },
                         ),
                       ),
                     );
                   },
+
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 120),
+                    opacity: _tileHighlight,
+                    child: ListTile(
+                      title: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '$title\n',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: description,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                 ),
               );
             },
