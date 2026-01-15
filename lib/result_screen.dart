@@ -23,6 +23,7 @@ class _ResultScreenState extends State<ResultScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _initAsync();
     });
+    AudioManager.play('audio/18.m4a');
   }
 
   Future<void> _initAsync() async {
@@ -34,8 +35,6 @@ class _ResultScreenState extends State<ResultScreen> {
     } catch (e) {
       debugPrint("WebSocket error: $e");
     }
-
-    AudioManager.playSetA();
 
     final title = widget.result['title'] ?? "おすすめ";
     final description = widget.result['description'] ?? "説明なし";
@@ -185,7 +184,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   BoxShadow(
                     color: const Color(0xFF4FC3F7).withValues(alpha: 0.8),
                     blurRadius: 4,
-                    offset: const Offset(0, 2),
+                    offset: const Offset(0, 1),
                   ),
                 ],
               ),

@@ -7,6 +7,7 @@ import 'settings_screen.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 //import 'package:coredo_app/components/banner_ad_widget.dart';
 import 'package:coredo_app/sound_manager.dart';
+import 'package:coredo_app/voice_list_screen.dart';
 
 final Logger _logger = Logger('MyApp');
 
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         '/question': (context) => const QuestionFlow(),
         '/history': (context) => const HistoryScreen(),
         '/settings': (context) => const SettingsScreen(),
+        '/voices': (context) => const VoiceListScreen(),
       },
     );
   }
@@ -66,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    AudioManager.play('audio/6.m4a');
+    AudioManager.play('audio/11.m4a');
   }
 
   @override
@@ -77,6 +79,13 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+            IconButton(
+              icon: const Icon(Icons.volume_up, color: Color.fromARGB(255, 15, 15, 15)),
+              onPressed: () {
+                Navigator.pushNamed(context, '/voices');
+              },
+            ),
+
           IconButton(
             icon: const Icon(
               Icons.settings,

@@ -21,6 +21,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
   String? overlayPath;
   String? errorMessage;
   String? loadingAnswer;
+  String mode = "meal";
 
   final List<String> _overlayPaths = [
     'assets/winter/2.png',
@@ -37,7 +38,6 @@ class _QuestionFlowState extends State<QuestionFlow> {
     super.initState();
     overlayPath = _overlayPaths[Random().nextInt(_overlayPaths.length)];
     Future.microtask(() {
-      AudioManager.playRandom();
       AdManager().loadInterstitialAd();
     });
   }
@@ -48,7 +48,8 @@ class _QuestionFlowState extends State<QuestionFlow> {
     super.didChangeDependencies();
     if (!_initialized) {
       final args = ModalRoute.of(context)?.settings.arguments as Map?;
-      final mode = args?["mode"] ?? "meal";
+      mode = args?["mode"] ?? "meal";
+      AudioManager.playRandom(mode);
       _loadFirstQuestion(mode);
       _initialized = true;
     }
@@ -100,9 +101,9 @@ Future<void> _answer(String answer) async {
 
     overlayPath = _overlayPaths[Random().nextInt(_overlayPaths.length)];
 
-    Future.delayed(const Duration(milliseconds: 100), () {
-      AudioManager.playRandom();
-    });
+    // Future.delayed(const Duration(milliseconds: 100), () {
+    //   AudioManager.playRandom(mode);
+    // });
     if (!mounted) return;
 
     setState(() {

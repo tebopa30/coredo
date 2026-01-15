@@ -42,25 +42,36 @@ class AudioManager {
 
   static bool get isSoundOn => SoundManager().isSoundOn.value;
 
-  static final List<String> _audioPaths = [
-    //'audio/1.m4a',
-    //'audio/2.m4a',
-    //'audio/3.m4a',
-    //'audio/4.m4a',
-    //'audio/5.m4a',
-    //'audio/7.m4a',
-    //'audio/10.m4a',
-    //'audio/12.m4a',
-    'audio/13.m4a',
-    'audio/14.m4a',
-    'audio/15.m4a',
+  static final Map<String, List<String>> _modeAudioPaths = {
+    "meal": [
     'audio/16.m4a',
     'audio/17.m4a',
     'audio/18.m4a',
     'audio/19.m4a',
     'audio/20.m4a',
     'audio/21.m4a',
-  ];
+  ],
+    "travel": [
+    'audio/1.m4a',
+    'audio/7.m4a',
+    'audio/9.m4a',
+    'audio/12.m4a',
+  ],
+    "play": [
+    'audio/3.m4a',
+    'audio/4.m4a',
+    'audio/5.m4a',
+    'audio/8.m4a',
+    'audio/10.m4a',
+  ],
+    "gift": [
+    'audio/2.m4a',
+    'audio/6.m4a',
+    'audio/13.m4a',
+    'audio/14.m4a',
+    'audio/15.m4a',
+  ],
+  };
 
   static Future<void> play(String path) async {
     await _player.stop();
@@ -75,8 +86,9 @@ class AudioManager {
     await _player.play(AssetSource(randomPath));
   }
 
-  static Future<void> playRandom() async {
-    final randomPath = _audioPaths[Random().nextInt(_audioPaths.length)];
+  static Future<void> playRandom(String mode) async {
+    final paths = _modeAudioPaths[mode] ?? _modeAudioPaths["meal"]!;
+    final randomPath = paths[Random().nextInt(paths.length)];
     await _player.stop();
     await _player.setVolume(isSoundOn ? seVolume : 0.0);
     await _player.play(AssetSource(randomPath));
