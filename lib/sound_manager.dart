@@ -71,6 +71,10 @@ class AudioManager {
     'audio/14.m4a',
     'audio/15.m4a',
   ],
+    "free": [
+      'audio/3.m4a',
+      'audio/5.m4a',
+    ]
   };
 
   static Future<void> play(String path) async {

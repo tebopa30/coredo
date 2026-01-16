@@ -22,6 +22,7 @@ class _QuestionFlowState extends State<QuestionFlow> {
   String? errorMessage;
   String? loadingAnswer;
   String mode = "meal";
+  Map? _args;
 
   final List<String> _overlayPaths = [
     'assets/winter/2.png',
@@ -47,8 +48,12 @@ class _QuestionFlowState extends State<QuestionFlow> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_initialized) {
-      final args = ModalRoute.of(context)?.settings.arguments as Map?;
-      mode = args?["mode"] ?? "meal";
+      _args = ModalRoute.of(context)?.settings.arguments as Map?;
+      if (_args?["freeword"] != null) {
+        mode = "free";
+      } else {
+        mode = _args?["mode"] ?? "meal";
+      }
       AudioManager.playRandom(mode);
       _loadFirstQuestion(mode);
       _initialized = true;
@@ -62,7 +67,10 @@ class _QuestionFlowState extends State<QuestionFlow> {
     });
 
     try {
-      final data = await ApiService.start(mode: mode);
+      final data = await ApiService.start(
+        mode: mode,
+        freeword: _args?['freeword'],
+      );
 
       final next = List<Map<String, dynamic>>.from(data['next_questions'] ?? []);
 
@@ -146,7 +154,7 @@ Future<void> _answer(String answer) async {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 252, 153, 186)),
           onPressed: () => Navigator.pop(context),
         ),
       ),

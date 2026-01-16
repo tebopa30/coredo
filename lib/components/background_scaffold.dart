@@ -9,6 +9,7 @@ class BackgroundScaffold extends StatefulWidget {
   final PreferredSizeWidget? appBar;
   final bool extendBodyBehindAppBar;
   final Widget? bottomNavigationBar;
+  final Widget? floatingActionButton;
 
   const BackgroundScaffold({
     super.key,
@@ -17,6 +18,7 @@ class BackgroundScaffold extends StatefulWidget {
     this.appBar,
     this.extendBodyBehindAppBar = false,
     this.bottomNavigationBar,
+    this.floatingActionButton,
   });
 
   @override
@@ -128,6 +130,7 @@ class BackgroundScaffoldState extends State<BackgroundScaffold> {
     return Scaffold(
       appBar: widget.appBar,
       extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+      floatingActionButton: widget.floatingActionButton,
       body: Stack(
         children: [
           // 背景色（動画がない時のフォールバック）

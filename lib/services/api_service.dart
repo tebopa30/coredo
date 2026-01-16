@@ -4,13 +4,17 @@ import 'package:http/http.dart' as http;
 const baseUrl = 'https://coredo.click/api';
 
 class ApiService {
-  static Future<Map<String, dynamic>> start({required String mode}) async {
+  static Future<Map<String, dynamic>> start({required String mode, String? freeword}) async {
+    final body = {
+      'mode': mode,
+    };
+    if (freeword != null) {
+      body['freeword'] = freeword;
+    }
     final r = await http.post(
       Uri.parse('$baseUrl/questions/start'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'mode': mode,
-      }),
+      body: jsonEncode(body),
     );
     return jsonDecode(r.body);
   }

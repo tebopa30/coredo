@@ -112,6 +112,9 @@ class _ResultScreenState extends State<ResultScreen> {
       case 'googleMaps':
         url = 'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(title)}';
         break;
+      case 'youtube':
+        url = 'https://www.youtube.com/results?search_query=${Uri.encodeComponent(title)}';
+        break;
 
       default:
         return;
@@ -131,6 +134,7 @@ class _ResultScreenState extends State<ResultScreen> {
       case 'travel':
         return [
           _buildAppButton('googleMaps', 'assets/google_maps_logo.png', title, 'Google Maps'),
+          _buildAppButton('youtube', 'assets/youtube_logo.png', title, 'YouTube'),
           _buildAppButton('jalan', 'assets/jalan_logo.png', title, 'じゃらん'),
           _buildAppButton('rakutenTravel', 'assets/rakuten_travel_logo.png', title, '楽天トラベル'),
         ];
@@ -138,6 +142,7 @@ class _ResultScreenState extends State<ResultScreen> {
       case 'play':
         return [
           _buildAppButton('googleMaps', 'assets/google_maps_logo.png', title, 'Google Maps'),
+          _buildAppButton('youtube', 'assets/youtube_logo.png', title, 'YouTube'),
           _buildAppButton('asoview', 'assets/asoview_logo.png', title, 'アソビュー'),
           _buildAppButton('jalanPlay', 'assets/jalan_logo.png', title, 'じゃらん遊び'),
         ];
@@ -147,6 +152,13 @@ class _ResultScreenState extends State<ResultScreen> {
           _buildAppButton('amazon', 'assets/amazon_logo.png', title, 'Amazon'),
           _buildAppButton('rakuten', 'assets/rakuten_logo.png', title, '楽天市場'),
           _buildAppButton('yahoo', 'assets/yahoo_logo.png', title, 'Yahoo!'),
+          _buildAppButton('youtube', 'assets/youtube_logo.png', title, 'YouTube'),
+        ];
+      
+      case 'free':
+        return [
+          _buildAppButton('googleMaps', 'assets/google_maps_logo.png', title, 'Google Maps'),
+          _buildAppButton('youtube', 'assets/youtube_logo.png', title, 'YouTube'),
         ];
 
       default: // meal
@@ -155,6 +167,7 @@ class _ResultScreenState extends State<ResultScreen> {
           _buildAppButton('tabelog', 'assets/tabelog_logo.png', title, 'Tabelog'),
           _buildAppButton('ubereats', 'assets/ubereats_logo.png', title, 'Uber Eats'),
           _buildAppButton('cookpad', 'assets/cookpad_logo.png', title, 'Cookpad'),
+          _buildAppButton('youtube', 'assets/youtube_logo.png', title, 'YouTube'),
         ];
     }
   }
@@ -244,6 +257,9 @@ class _ResultScreenState extends State<ResultScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 245, 138, 173),
+        ),
       ),
       body: Stack(
         children: [
@@ -296,15 +312,9 @@ class _ResultScreenState extends State<ResultScreen> {
 
         // 🔥 タイトルを「押せるカード風」に変更
 GestureDetector(
-  onTapDown: (_) {
-    setState(() => _titleHighlight = 0.5); // ← 光る
-  },
-  onTapUp: (_) {
-    setState(() => _titleHighlight = 0.1); // ← 元に戻る
-  },
-  onTapCancel: () {
-    setState(() => _titleHighlight = 0.1);
-  },
+  onTapDown: (_) => setState(() => _titleHighlight = 0.2),
+  onTapUp: (_) => setState(() => _titleHighlight = 0.05),
+  onTapCancel: () => setState(() => _titleHighlight = 0.05),
   onTap: () async {
     final query = Uri.encodeComponent(title);
     final url = Uri.parse("https://www.google.com/search?q=$query");
@@ -314,25 +324,47 @@ GestureDetector(
   },
   child: AnimatedContainer(
     duration: const Duration(milliseconds: 120),
-    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
     decoration: BoxDecoration(
-      color: Colors.white.withValues(alpha: _titleHighlight),
-      borderRadius: BorderRadius.circular(12),
+      color: Colors.white.withOpacity(0.9),
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: Colors.blueAccent.withOpacity(0.4)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(_titleHighlight),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
+        )
+      ],
     ),
-    child: Wrap(
-      direction: Axis.horizontal,
-      spacing: 4,
-      crossAxisAlignment: WrapCrossAlignment.center,
+    child: Row(
       children: [
-        const Icon(Icons.search, color: Colors.blueAccent, size: 20),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            color: Colors.blueAccent,
-            fontWeight: FontWeight.w600,
+        // 🔥 左側を Flexible で包む（長文対応）
+        Flexible(
+          child: Row(
+            children: [
+              const Icon(Icons.search, color: Colors.blueAccent, size: 20),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.blueAccent,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 2, // ← 2行まで許可
+                  overflow: TextOverflow.ellipsis, // ← 長すぎる場合は「…」
+                ),
+              ),
+            ],
           ),
         ),
+
+        const SizedBox(width: 8),
+
+        // 🔥 右端のアイコンは固定サイズ
+        const Icon(Icons.open_in_new, color: Colors.blueAccent, size: 18),
       ],
     ),
   ),
