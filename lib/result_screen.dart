@@ -107,7 +107,7 @@ class _ResultScreenState extends State<ResultScreen> {
       case 'yahoo':
         url = 'https://shopping.yahoo.co.jp/search?p=${Uri.encodeComponent(title)}';
         break;
-
+      
       // 共通
       case 'googleMaps':
         url = 'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(title)}';
@@ -326,12 +326,12 @@ GestureDetector(
     duration: const Duration(milliseconds: 120),
     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
     decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.9),
+      color: Colors.white.withValues(alpha: 0.9),
       borderRadius: BorderRadius.circular(14),
-      border: Border.all(color: Colors.blueAccent.withOpacity(0.4)),
+      border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.4)),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(_titleHighlight),
+          color: Colors.black.withValues(alpha: _titleHighlight),
           blurRadius: 6,
           offset: const Offset(0, 2),
         )
