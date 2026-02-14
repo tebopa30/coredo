@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:coredo_app/sound_manager.dart';
 import 'package:coredo_app/components/background_scaffold.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -22,10 +23,15 @@ class SettingsScreen extends StatelessWidget {
           return ListView(
             children: [
               const SizedBox(height: 80), // AppBarの分空ける
+
+              // 音声スイッチ
               SwitchListTile(
                 title: const Text(
                   '音声',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
                 value: isSoundOn,
                 onChanged: (value) {
@@ -36,11 +42,17 @@ class SettingsScreen extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
+
               const Divider(),
+
+              // プライバシーポリシー
               ListTile(
                 title: const Text(
                   'プライバシーポリシー',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
@@ -48,9 +60,32 @@ class SettingsScreen extends StatelessWidget {
                     context: context,
                     builder: (context) => AlertDialog(
                       title: const Text('プライバシーポリシー'),
-                      content: const SingleChildScrollView(
-                        child: Text('''
-本アプリでは、ユーザーの皆さまのプライバシーを尊重し、以下の方針に基づいて個人情報を取り扱います。
+                      content: const Text('どちらで表示しますか？'),
+                      actions: [
+                        // Webで開く
+                        TextButton(
+                          onPressed: () async {
+                            final url = Uri.parse(
+                              "https://tebopa30.github.io/coredo-privacy/privacy.html",
+                            );
+                            await launchUrl(url,
+                                mode: LaunchMode.externalApplication);
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Webで開く'),
+                        ),
+
+                        // アプリ内で読む
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context); // 選択ダイアログを閉じる
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('プライバシーポリシー'),
+                                content: const SingleChildScrollView(
+                                  child: Text(
+                                    '''本アプリでは、ユーザーの皆さまのプライバシーを尊重し、以下の方針に基づいて個人情報を取り扱います。
 
 1. 収集する情報について
 本アプリは、通常の利用において個人情報を収集することはありません。
@@ -73,19 +108,26 @@ class SettingsScreen extends StatelessWidget {
 6. 改定について
 本ポリシーの内容は、必要に応じて改定される場合があります。改定後は速やかにアプリ内で告知します。
 
-制定日：2025年12月6日
-                          '''),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('閉じる'),
+制定日：2026年2月14日''',
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('閉じる'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          child: const Text('アプリ内で読む'),
                         ),
                       ],
                     ),
                   );
                 },
               ),
+
               const Divider(),
             ],
           );
