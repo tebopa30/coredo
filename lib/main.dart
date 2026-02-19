@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'question_flow.dart';
 import 'history_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'components/background_scaffold.dart';
 import 'settings_screen.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 //import 'package:coredo_app/components/banner_ad_widget.dart';
 import 'package:coredo_app/sound_manager.dart';
 import 'package:coredo_app/voice_list_screen.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 final Logger _logger = Logger('MyApp');
 
@@ -18,9 +20,28 @@ Future<void> main() async {
     debugPrint('${record.level.name}: ${record.time}: ${record.message}');
   });
   _logger.info('アプリ起動しました');
+  await handleATT();
   await MobileAds.instance.initialize();
   await SoundManager().init();
   runApp(const MyApp());
+}
+
+Future<void> handleATT() async {
+  final prefs = await SharedPreferences.getInstance();
+  final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+
+  if (isFirstLaunch) {
+    // 初回だけ ATT を表示
+    final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+
+    if (status == TrackingStatus.notDetermined) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      await AppTrackingTransparency.requestTrackingAuthorization();
+    }
+
+    // 初回起動フラグを false にする
+    await prefs.setBool('isFirstLaunch', false);
+  }
 }
 
 class MyApp extends StatelessWidget {
