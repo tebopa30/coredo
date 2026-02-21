@@ -1,16 +1,26 @@
 # coredo_app
+- 食事をする、旅行に行く、遊びに行く、贈り物を選ぶなどの迷ったときに質問フローでそれらの決定を助け、キャラクターボイスを聞くことができるアプリ
 
-A new Flutter project.
+## 仕組み
+- 2〜3択の質問を繰り返し → 最終的に結果に到達
 
-## Getting Started
+## 画面構成
+- **HomeScreen** → 「質問スタート」ボタン
+- **QuestionScreen** → 選択肢を表示、回答を送信
+- **ResultScreen** → 結果表示、結果をタップして検索、外部ページに遷移するボタン
+- **HistoryScreen** → 過去の回答履歴
+- **VoiceListScreen** → キャラクターボイス一覧
 
-This project is a starting point for a Flutter application.
+## 技術スタック
+- **バックエンド:** Rails API + PostgreSQL (EC2/Cloud9)
+- **フロント:** Flutter (Android/iOS)
+- **Webランディング:** HTML/CSS/JS + jQuery
+- **DB:** SQL (PostgreSQL)
+- **IDE:** Cloud9
+- **デプロイ:** Puma + Nginx + SSL (EC2)
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Rails API設計
+- **Question**: 質問文、routing(enum: static/ai)、order_index
+- **Option**: 選択肢、次の質問 or Resultへの分岐
+- **Result**: 結果文、URL
+- **Answer**: ユーザー回答履歴（session_idで紐付け）
