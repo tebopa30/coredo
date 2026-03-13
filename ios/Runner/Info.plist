@@ -49,6 +49,8 @@
 	<string>ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>広告の最適化のために使用します。</string>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>現在地情報を利用します。</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
