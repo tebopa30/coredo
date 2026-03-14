@@ -82,6 +82,10 @@ flutter:
     - assets/
     - assets/audio/
     - assets/winter/
+  
+  platform:
+    ios:
+    android:
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
