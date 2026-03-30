@@ -11,7 +11,7 @@ import 'package:coredo_app/sound_manager.dart';
 import 'package:coredo_app/voice_list_screen.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
-final Logger _logger = Logger('MyApp');
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
